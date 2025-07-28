@@ -13,11 +13,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        let reactor = SearchListReactor()
-        let viewController = SearchListViewController(reactor: reactor)
-
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = viewController
+        let tabBarController = TabBarController()
+
+        window.rootViewController = tabBarController
         window.makeKeyAndVisible()
 
         self.window = window
