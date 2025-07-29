@@ -19,7 +19,7 @@ struct BookDTO: Codable {
     let title: String
     let translators: [String]
     let url: String
-    
+
     enum CodingKeys: String, CodingKey {
         case authors, contents, datetime, isbn, price, publisher, status, thumbnail, title, translators, url
         case salePrice = "sale_price"
@@ -30,7 +30,7 @@ struct MetaDTO: Codable {
     let isEnd: Bool
     let pageableCount: Int
     let totalCount: Int
-    
+
     enum CodingKeys: String, CodingKey {
         case isEnd
         case pageableCount = "pageable_count"
