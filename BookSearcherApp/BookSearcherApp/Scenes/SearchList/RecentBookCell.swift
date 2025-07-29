@@ -18,7 +18,6 @@ final class RecentBookCell: UICollectionViewCell {
         $0.numberOfLines = 2
     }
 
-
     override init(frame: CGRect) {
         super.init(frame: frame)
 

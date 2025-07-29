@@ -59,13 +59,11 @@ final class SearchedBookCell: UICollectionViewCell {
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func configure(title: String, authors: [String], salePrice: Int, thumbnailURL: URL) {
         titleLabel.text = title
         authorLabel.text = StringFormatter.formatList(authors)
         priceLabel.text = StringFormatter.formatPrice(salePrice)
         thumbnailImageView.kf.setImage(with: thumbnailURL)
     }
-
-
 }

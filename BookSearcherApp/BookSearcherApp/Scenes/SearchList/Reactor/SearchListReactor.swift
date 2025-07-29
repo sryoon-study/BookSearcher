@@ -37,14 +37,14 @@ final class SearchListReactor: BaseReactor<
         case let .search(query):
             // 상태 반영
             let setQuery = Observable.just(Mutation.setQuery(query))
-            
+
             let searchResult = Observable<Mutation>.create { observer in
                 dataService.fetchData(query: query) { result in
                     switch result {
-                    case .success(let dto):
+                    case let .success(dto):
                         observer.onNext(.setBooks(dto.documents))
                         observer.onCompleted()
-                    case .failure(let error):
+                    case let .failure(error):
                         print("Error: \(error)")
                         observer.onNext(.setBooks([])) // 빈 리스트 처리
                         observer.onCompleted()
