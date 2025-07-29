@@ -1,12 +1,12 @@
 
 import Foundation
 
-struct BookData: Codable {
-    let documents: [Documents]
-    let meta: Meta
+struct BookResponseDTO: Codable {
+    let documents: [BookDTO]
+    let meta: MetaDTO
 }
 
-struct Documents: Codable {
+struct BookDTO: Codable {
     let authors: [String]
     let contents: String
     let datetime: String
@@ -26,7 +26,7 @@ struct Documents: Codable {
     }
 }
 
-struct Meta: Codable {
+struct MetaDTO: Codable {
     let isEnd: Bool
     let pageableCount: Int
     let totalCount: Int
