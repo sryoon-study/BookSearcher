@@ -2,11 +2,10 @@
 import UIKit
 
 import Kingfisher
-import ReactorKit
 import SnapKit
 import Then
 
-final class RecentBookCell: UICollectionViewCell, ReactorKit.View {
+final class RecentBookCell: UICollectionViewCell {
     private let thumbnailImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
@@ -19,7 +18,6 @@ final class RecentBookCell: UICollectionViewCell, ReactorKit.View {
         $0.numberOfLines = 2
     }
 
-    var disposeBag = DisposeBag()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,17 +40,8 @@ final class RecentBookCell: UICollectionViewCell, ReactorKit.View {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func bind(reactor: RecentBookCellReactor) {
-        reactor.state
-            .map { $0.thumbnailURL }
-            .subscribe(onNext: { [weak self] url in
-                self?.thumbnailImageView.kf.setImage(with: url)
-            })
-            .disposed(by: disposeBag)
-
-        reactor.state
-            .map { $0.title }
-            .bind(to: titleLabel.rx.text)
-            .disposed(by: disposeBag)
+    func configure(title: String, thumbnailURL: URL) {
+        titleLabel.text = title
+        thumbnailImageView.kf.setImage(with: thumbnailURL)
     }
 }

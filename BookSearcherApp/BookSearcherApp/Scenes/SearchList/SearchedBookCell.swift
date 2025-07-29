@@ -2,11 +2,10 @@
 import UIKit
 
 import Kingfisher
-import ReactorKit
 import SnapKit
 import Then
 
-final class SearchedBookCell: UICollectionViewCell, ReactorKit.View {
+final class SearchedBookCell: UICollectionViewCell {
     private let thumbnailImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
@@ -27,8 +26,6 @@ final class SearchedBookCell: UICollectionViewCell, ReactorKit.View {
         $0.font = UIFont.systemFont(ofSize: 12)
         $0.textColor = .label
     }
-
-    var disposeBag = DisposeBag()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -62,28 +59,13 @@ final class SearchedBookCell: UICollectionViewCell, ReactorKit.View {
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func bind(reactor: SearchedBookCellReactor) {
-        reactor.state
-            .map { $0.thumbnailURL }
-            .subscribe(onNext: { [weak self] url in
-                self?.thumbnailImageView.kf.setImage(with: url)
-            })
-            .disposed(by: disposeBag)
-
-        reactor.state
-            .map { $0.title }
-            .bind(to: titleLabel.rx.text)
-            .disposed(by: disposeBag)
-
-        reactor.state
-            .map { $0.author }
-            .bind(to: authorLabel.rx.text)
-            .disposed(by: disposeBag)
-
-        reactor.state
-            .map { "\($0.salePrice)+원" }
-            .bind(to: priceLabel.rx.text)
-            .disposed(by: disposeBag)
+    
+    func configure(title: String, authors: [String], salePrice: Int, thumbnailURL: URL) {
+        titleLabel.text = title
+        authorLabel.text = StringFormatter.formatList(authors)
+        priceLabel.text = StringFormatter.formatPrice(salePrice)
+        thumbnailImageView.kf.setImage(with: thumbnailURL)
     }
+
+
 }
