@@ -8,6 +8,9 @@ import SnapKit
 import Then
 
 final class SearchListViewController: BaseViewController<SearchListReactor> {
+    
+    private let dummyRelay = PublishRelay<[SearchedBookViewModel]>()
+    
     private let searchBar = UISearchBar().then {
         $0.barStyle = .default
         $0.placeholder = "Search"
@@ -42,10 +45,17 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
             .map { SearchListReactor.Action.search($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
         //  2. 상태를 UI로 바인딩
         reactor.state.map { $0.query }
             .distinctUntilChanged()
             .bind(to: searchBar.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.books.map(SearchedBookViewModel.init) } // DTO → ViewModel
+            .observe(on: MainScheduler.instance)
+            .bind(to: dummyRelay) // DiffableDataSource에 연결하거나 reloadData
             .disposed(by: disposeBag)
     }
 }
