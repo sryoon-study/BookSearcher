@@ -7,7 +7,7 @@ import Then
 
 final class SearchedBookCell: UICollectionViewCell {
     private let thumbnailImageView = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 8
     }
@@ -15,6 +15,7 @@ final class SearchedBookCell: UICollectionViewCell {
     private let titleLabel = UILabel().then {
         $0.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         $0.textColor = .label
+        $0.numberOfLines = 2
     }
 
     private let authorLabel = UILabel().then {
@@ -26,33 +27,39 @@ final class SearchedBookCell: UICollectionViewCell {
         $0.font = UIFont.systemFont(ofSize: 12)
         $0.textColor = .label
     }
+    
+    private let titleRow = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 4
+    }
+
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
+        titleRow.addArrangedSubview(titleLabel)
+        titleRow.addArrangedSubview(authorLabel)
+        
         contentView.addSubview(thumbnailImageView)
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(authorLabel)
+        contentView.addSubview(titleRow)
         contentView.addSubview(priceLabel)
 
         thumbnailImageView.snp.makeConstraints {
-            $0.leading.top.bottom.equalToSuperview().inset(8)
+            $0.leading.top.bottom.equalToSuperview()
+            $0.width.equalTo(59)
         }
-
-        titleLabel.snp.makeConstraints {
+        
+        titleRow.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(thumbnailImageView.snp.trailing).offset(8)
+            $0.trailing.lessThanOrEqualTo(priceLabel.snp.leading).offset(-8)
         }
-
-        authorLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalTo(titleLabel.snp.trailing).offset(8)
-        }
-
+        
         priceLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.trailing.lessThanOrEqualToSuperview().inset(8)
+            $0.trailing.equalToSuperview()
         }
+        
     }
 
     @available(*, unavailable)
@@ -60,10 +67,10 @@ final class SearchedBookCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(title: String, authors: [String], salePrice: Int, thumbnailURL: URL) {
+    func configure(title: String, author: String, salePrice: String, thumbnailURL: URL) {
         titleLabel.text = title
-        authorLabel.text = StringFormatter.formatList(authors)
-        priceLabel.text = StringFormatter.formatPrice(salePrice)
+        authorLabel.text = author
+        priceLabel.text = salePrice
         thumbnailImageView.kf.setImage(with: thumbnailURL)
     }
 }
