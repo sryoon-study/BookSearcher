@@ -15,13 +15,13 @@ final class SearchListReactor: BaseReactor<
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
         case setQuery(String)
-        case setBooks([BookDTO])
+        case setSearchedBookDatas([SearchedBookData])
     }
 
     // View의 상태 정의 (현재 View의 상태값)
     struct State {
         var query: String = ""
-        var books: [BookDTO] = []
+        @Pulse var searchedBooks: [SearchedBookData] = []
     }
 
     // 생성자에서 초기 상태 설정
@@ -38,20 +38,12 @@ final class SearchListReactor: BaseReactor<
             // 상태 반영
             let setQuery = Observable.just(Mutation.setQuery(query))
 
-            let searchResult = Observable<Mutation>.create { observer in
-                dataService.fetchData(query: query) { result in
-                    switch result {
-                    case let .success(dto):
-                        observer.onNext(.setBooks(dto.documents))
-                        observer.onCompleted()
-                    case let .failure(error):
-                        print("Error: \(error)")
-                        observer.onNext(.setBooks([])) // 빈 리스트 처리
-                        observer.onCompleted()
-                    }
+            let searchResult = dataService.rx.searchBooks(query: query)
+                .map { dto in
+                    Mutation.setSearchedBookDatas(dto.documents.map { SearchedBookData(from: $0) })
                 }
-                return Disposables.create()
-            }
+                .catchAndReturn(Mutation.setSearchedBookDatas([]))
+
             return .concat(setQuery, searchResult)
         }
     }
@@ -63,8 +55,8 @@ final class SearchListReactor: BaseReactor<
         switch mutation {
         case let .setQuery(query):
             newState.query = query
-        case let .setBooks(books):
-            newState.books = books
+        case let .setSearchedBookDatas(books):
+            newState.searchedBooks = books
         }
         return newState
     }

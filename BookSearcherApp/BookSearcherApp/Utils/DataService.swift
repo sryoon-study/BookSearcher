@@ -2,8 +2,10 @@
 import Alamofire
 import Foundation
 
-final class DataService {
-    func fetchData(query: String, completion: @escaping (Result<BookResponseDTO, Error>) -> Void) {
+import RxSwift
+
+class DataService: ReactiveCompatible {
+    func searchBooks(query: String, completion: @escaping (Result<BookResponseDTO, Error>) -> Void) {
         let url = "https://dapi.kakao.com/v3/search/book"
         let parameters: Parameters = [
             "query": query,
@@ -22,5 +24,30 @@ final class DataService {
                     completion(.failure(error))
                 }
             }
+        
     }
 }
+
+extension Reactive where Base: DataService {
+    func searchBooks(query: String) -> Observable<BookResponseDTO> {
+        return Observable.create { observer in
+            let url = "https://dapi.kakao.com/v3/search/book"
+            let parameters: Parameters = ["query": query]
+            let headers: HTTPHeaders = ["Authorization": "KakaoAK \(Secrets.apiKey)"]
+
+            AF.request(url, method: .get, parameters: parameters, headers: headers)
+                .responseDecodable(of: BookResponseDTO.self) { response in
+                    switch response.result {
+                    case .success(let data):
+                        observer.onNext(data)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        observer.onError(error)
+                    }
+                }
+            
+            return Disposables.create()
+        }
+    }
+}
+
