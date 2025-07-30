@@ -1,7 +1,7 @@
 
 import Foundation
 
-struct RecentBookData {
+struct RecentBookData: Hashable {
     let title: String
     let thumbnailURL: URL
 
@@ -11,7 +11,7 @@ struct RecentBookData {
     }
 }
 
-struct SearchedBookData {
+struct SearchedBookData: Hashable {
     let title: String
     let thumbnailURL: URL
     let author: String
