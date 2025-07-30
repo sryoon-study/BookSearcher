@@ -30,22 +30,16 @@ class DataService: ReactiveCompatible {
 
 extension Reactive where Base: DataService {
     func searchBooks(query: String) -> Observable<BookResponseDTO> {
-        return Observable.create { observer in
-            let url = "https://dapi.kakao.com/v3/search/book"
-            let parameters: Parameters = ["query": query]
-            let headers: HTTPHeaders = ["Authorization": "KakaoAK \(Secrets.apiKey)"]
-
-            AF.request(url, method: .get, parameters: parameters, headers: headers)
-                .responseDecodable(of: BookResponseDTO.self) { response in
-                    switch response.result {
-                    case .success(let data):
-                        observer.onNext(data)
-                        observer.onCompleted()
-                    case .failure(let error):
-                        observer.onError(error)
-                    }
+        return Observable.create { [base] observer in
+            base.searchBooks(query: query) { result in
+                switch result {
+                case let .success(data):
+                    observer.onNext(data)
+                    observer.onCompleted()
+                case let .failure(error):
+                    observer.onError(error)
                 }
-            
+            }
             return Disposables.create()
         }
     }

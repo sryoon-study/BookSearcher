@@ -26,10 +26,10 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     ]
 #endif
     
-    private let searchBar = UISearchBar().then {
-        $0.barStyle = .default
-        $0.placeholder = "Search"
-    }
+//    private let searchBar = UISearchBar().then {
+//        $0.barStyle = .default
+//        $0.placeholder = "Search"
+//    }
     
     lazy var collectionView = UICollectionView(
         frame: .zero,
@@ -37,6 +37,8 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     )
     
     lazy var collectionViewDataSource = makeDataSource(collectionView)
+    
+    private let searchController = UISearchController()
     
     init(reactor: SearchListReactor) {
         super.init(nibName: nil, bundle: nil)
@@ -51,19 +53,14 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     override func setupUI() {
         view.backgroundColor = .systemBackground
         
-        view.addSubview(searchBar)
-        view.addSubview(collectionView)
-        
+        view.addSubview(collectionView) // 첫번째가 스크롤바가 있어야 네비게이션 / 탭바 어피어런스가 적용
+        navigationItem.searchController = searchController
+        navigationItem.searchController?.searchBar.tintColor = .label
+        navigationItem.searchController?.searchBar.setValue("취소", forKey: "cancelButtonText")
         collectionView.register(SearchListSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderView")
         
-        searchBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.leading.trailing.equalToSuperview()
-        }
-        
         collectionView.snp.makeConstraints {
-            $0.top.equalTo(searchBar.snp.bottom).offset(8)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.directionalEdges.equalToSuperview()
         }
         
     }
@@ -115,8 +112,8 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                 )
                 let layoutGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .absolute(35),
-                        heightDimension: .absolute(50)
+                        widthDimension: .absolute(59),
+                        heightDimension: .absolute(85)
                     ),
                     subitems: [layoutItem]
                 )
@@ -165,8 +162,8 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
 
                 let section = NSCollectionLayoutSection(group: layoutGroup)
                 section.boundarySupplementaryItems = [boundaryItem]
-                section.interGroupSpacing = 10
-                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+                section.interGroupSpacing = 20
+                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
                 return section
                 
             }
@@ -177,7 +174,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     
     override func bind(reactor: SearchListReactor) {
         // 1. 사용자의 입력을 Action으로 바인딩
-        searchBar.rx.text.orEmpty
+        searchController.searchBar.rx.text.orEmpty
             .distinctUntilChanged()
             .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
             .map { SearchListReactor.Action.search($0) }
@@ -187,7 +184,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
         //  2. 상태를 UI로 바인딩
         reactor.state.map { $0.query }
             .distinctUntilChanged()
-            .bind(to: searchBar.rx.text)
+            .bind(to: searchController.searchBar.rx.text)
             .disposed(by: disposeBag)
         
         // combineLatest

@@ -9,6 +9,10 @@ enum StringFormatter {
     }
 
     static func formatPrice(_ price: Int) -> String {
-        return "\(price)원"
+        if price > 0 {
+            return "\(price.formatted(.number))원"
+        } else {
+            return "품절"
+        }
     }
 }

@@ -7,7 +7,7 @@ import Then
 
 final class SearchedBookCell: UICollectionViewCell {
     private let thumbnailImageView = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
+        $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 8
     }
@@ -50,13 +50,13 @@ final class SearchedBookCell: UICollectionViewCell {
         }
         
         titleRow.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
+            $0.top.equalToSuperview()
             $0.leading.equalTo(thumbnailImageView.snp.trailing).offset(8)
-            $0.trailing.lessThanOrEqualTo(priceLabel.snp.leading).offset(-8)
+            $0.trailing.equalToSuperview()
         }
         
         priceLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
+            $0.bottom.equalToSuperview()
             $0.trailing.equalToSuperview()
         }
         

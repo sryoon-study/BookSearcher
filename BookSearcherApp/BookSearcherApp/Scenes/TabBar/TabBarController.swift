@@ -4,7 +4,6 @@ import UIKit
 class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTabBarAppearance()
         setupViewController()
     }
 
@@ -37,19 +36,6 @@ class TabBarController: UITabBarController {
         viewControllers = [searchNav, favoriteNav]
     }
     
-    // 탭바 Appearnce설정
-    private func setupTabBarAppearance() {
-        let appearance = UITabBarAppearance()
-        appearance.configureWithDefaultBackground() // ← 반투명 배경 (iOS 기본 반투명 효과)
-
-        // 커스텀 색상에 알파값을 줄 수도 있음
-//        appearance.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.85)
-
-        tabBar.standardAppearance = appearance
-        if #available(iOS 15.0, *) {
-            tabBar.scrollEdgeAppearance = appearance
-        }
-    }
 
     // 선택시 애니메이션 효과
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
