@@ -19,8 +19,8 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
     }
     
     #if DEBUG
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         let tmp = CoreDataMaanger.shared.fetchAllFavoriteBooks()
         tmp.forEach { print($0.title) }
     }
