@@ -8,6 +8,17 @@ import SnapKit
 import Then
 
 final class FavoriteListViewController: BaseViewController<FavoriteListReactor> {
+    
+    private let clearFavoriteButton = UIButton(configuration: .clearFavorite)
+    
+    private let favoriteListLabel = UILabel().then {
+        $0.text = "담은 책 리스트"
+        $0.font = .systemFont(ofSize: 22, weight: .bold)
+        $0.textColor = .label
+    }
+    
+    private let addFavoriteButton = UIButton(configuration: .addFavorite)
+    
     init(reactor: FavoriteListReactor) {
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
@@ -26,7 +37,14 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         }
     #endif
 
+    
     override func setupUI() {
-        view.backgroundColor = .systemOrange
+        view.backgroundColor = .systemBackground
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: clearFavoriteButton)
+        navigationItem.titleView = favoriteListLabel
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addFavoriteButton)
+        
+        
     }
 }
