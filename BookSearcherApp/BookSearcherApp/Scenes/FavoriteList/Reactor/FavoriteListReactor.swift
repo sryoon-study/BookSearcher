@@ -32,7 +32,7 @@ final class FavoriteListReactor: BaseReactor<
     // 사용자 입력 → 상태 변화 신호로 변환
     override func mutate(action: Action) -> Observable<Mutation> {
         switch action {
-        case .reloadFavoriteBooks
+        case .reloadFavoriteBooks:
             let books = CoreDataMaanger.shared.fetchAllFavoriteBooks()
             return .just(.setFavoriteBooks(books))
         }
