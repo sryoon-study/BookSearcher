@@ -2,16 +2,19 @@
 import Foundation
 
 struct RecentBookData: Hashable {
+    let isbn: String
     let title: String
     let thumbnailURL: URL
 
     init(from bookdata: RecentBook) {
+        isbn = bookdata.isbn
         title = bookdata.title
         thumbnailURL = URL(string: bookdata.thumbnail) ?? URL(string: "https://placehold.co/120x174")!
     }
 }
 
 struct SearchedBookData: Hashable {
+    let isbn: String
     let title: String
     let author: String
     let translator: String?
@@ -20,6 +23,7 @@ struct SearchedBookData: Hashable {
     let contents: String
 
     init(from dto: BookDTO) {
+        isbn = dto.isbn
         title = dto.title
         author = StringFormatter.formatList(dto.authors)
         translator = StringFormatter.formatList(dto.translators)
