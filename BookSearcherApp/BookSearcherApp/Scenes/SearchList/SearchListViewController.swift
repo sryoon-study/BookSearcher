@@ -25,12 +25,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
         ),
     ]
 #endif
-    
-//    private let searchBar = UISearchBar().then {
-//        $0.barStyle = .default
-//        $0.placeholder = "Search"
-//    }
-    
+       
     lazy var collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: makeLayout()
@@ -181,12 +176,55 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        collectionView.rx.itemSelected
+            .bind { [weak self] indexPath in
+                guard
+                    let self,
+                    let item = self.collectionViewDataSource.itemIdentifier(for: indexPath),
+                    case let .searchedBook(book) = item
+                else { return }
+                
+                let reactor = BookDetailReactor(book: book)
+                let detailVC = BookDetailViewController(reactor: reactor)
+                detailVC.modalPresentationStyle = .pageSheet
+                detailVC.modalTransitionStyle = .coverVertical
+                
+                if let sheet = detailVC.sheetPresentationController {
+                    sheet.detents = [.medium(), .large()]
+                    sheet.selectedDetentIdentifier = .large // 첫 출력 높이
+                    sheet.prefersGrabberVisible = true // 상단 당김바
+                    sheet.preferredCornerRadius = 20
+                }
+                
+                self.present(detailVC, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        // 앱 크래시
+//        collectionView.rx.modelSelected(SearchedBookData.self)
+//            .bind { [weak self] selectedBook in
+//                let reactor = BookDetailReactor(book: selectedBook)
+//                let detailVC = BookDetailViewController(reactor: reactor)
+//                detailVC.modalPresentationStyle = .pageSheet
+//                detailVC.modalTransitionStyle = .coverVertical
+//                
+//                if let sheet = detailVC.sheetPresentationController {
+//                    sheet.detents = [.medium(), .large()]
+//                    sheet.prefersGrabberVisible = true
+//                    sheet.preferredCornerRadius = 20
+//                }
+//                
+//                self?.present(detailVC, animated: true)
+//            }
+//            .disposed(by: disposeBag)
+        
         //  2. 상태를 UI로 바인딩
         reactor.state.map { $0.query }
             .distinctUntilChanged()
             .bind(to: searchController.searchBar.rx.text)
             .disposed(by: disposeBag)
         
+        // TODO: 최근본책과 합치기
         // combineLatest
         reactor.pulse{ $0.$searchedBooks }
             .bind{ [weak collectionViewDataSource ] searchedBooks in
@@ -196,6 +234,8 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                 collectionViewDataSource?.apply(snapShot)
             }
             .disposed(by: disposeBag)
+        
+        
     }
     
     enum Section {
