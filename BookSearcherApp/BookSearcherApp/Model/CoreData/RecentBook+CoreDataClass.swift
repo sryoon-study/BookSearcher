@@ -2,7 +2,7 @@
 //  RecentBook+CoreDataClass.swift
 //  BookSearcherApp
 //
-//  Created by Yoon on 7/29/25.
+//  Created by Yoon on 7/31/25.
 //
 //
 

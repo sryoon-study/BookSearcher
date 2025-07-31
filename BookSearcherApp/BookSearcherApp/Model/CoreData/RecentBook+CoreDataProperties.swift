@@ -2,7 +2,7 @@
 //  RecentBook+CoreDataProperties.swift
 //  BookSearcherApp
 //
-//  Created by Yoon on 7/29/25.
+//  Created by Yoon on 7/31/25.
 //
 //
 
@@ -17,8 +17,9 @@ extension RecentBook {
     }
 
     @NSManaged public var isbn: String
-    @NSManaged public var title: String
     @NSManaged public var thumbnail: String
+    @NSManaged public var title: String
+    @NSManaged public var updateDate: Date
 
 }
 
