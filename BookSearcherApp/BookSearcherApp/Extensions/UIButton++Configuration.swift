@@ -19,7 +19,7 @@ extension UIButton.Configuration {
     // 즐겨찾기 추가 버튼 컨피그
     static var favoriteAdd: UIButton.Configuration {
         var config = filled()
-        config.title = "즐겨찾기 추가"
+        config.title = "책 담기"
         config.baseBackgroundColor = .systemBlue
         config.titleTextAttributesTransformer = .init { attr in
             var newAttr = attr
@@ -33,7 +33,7 @@ extension UIButton.Configuration {
     // 즐겨찾기 제거 버튼 컨피그
     static var favoriteRemove: UIButton.Configuration {
         var config = filled()
-        config.title = "즐겨찾기 제거"
+        config.title = "담은 책 제거"
         config.baseBackgroundColor = .systemRed
         config.titleTextAttributesTransformer = .init { attr in
             var newAttr = attr
