@@ -35,13 +35,15 @@ final class CoreDataMaanger {
         }
     }
     
+    // MARK: 최근 본 책 관련 함수
+    
     // 최근 본 책 데이터를 생성
-    func createRecentBook(isbn: String, title: String, thumbnail: String) {
-        let book = RecentBook(context: context)
-        book.isbn = isbn
-        book.title = title
-        book.thumbnail = thumbnail
-        book.updateDate = Date()
+    func createRecentBook(book: SearchedBookData) {
+        let recentBook = RecentBook(context: context)
+        recentBook.isbn = book.isbn
+        recentBook.title = book.title
+        recentBook.thumbnail = book.thumbnailURL.absoluteString
+        recentBook.updateDate = Date()
         
         saveContext()
     }
@@ -74,11 +76,11 @@ final class CoreDataMaanger {
         return try? context.fetch(fetchRequest).first
     }
     // 조건에 맞춰 최근 본 책 레코드를 추가하거나 업데이트
-    func addRecentBook(isbn: String, title: String, thumbnail: String) {
-        if let _ = fetchOneRecentBook(isbn: isbn) { // 이미 존재할경우 날짜만 업데이트
-            updateRecentBookDate(isbn: isbn)
+    func addRecentBook(book: SearchedBookData) {
+        if let _ = fetchOneRecentBook(isbn: book.isbn) { // 이미 존재할경우 날짜만 업데이트
+            updateRecentBookDate(isbn: book.isbn)
         } else { // 존재하지 않는다면 추가
-            createRecentBook(isbn: isbn, title: title, thumbnail: thumbnail)
+            createRecentBook(book: book)
             trimRecentBooksIfNeed()
         }
     }
@@ -94,10 +96,26 @@ final class CoreDataMaanger {
         saveContext()
     }
     
-    // 전부 삭제용 코드
+    // 최근본 책전부 삭제용 코드
     func deleteAllRecentBooks() {
         let books = fetchAllRecentBooks()
         books.forEach { context.delete($0) }
         saveContext()
+    }
+    
+    // MARK: 즐겨찾기 관련 함수
+    
+    func createFavoritebook(book: SearchedBookData) {
+        let favoriteBook = FavoriteBook(context: context)
+        favoriteBook.isbn = book.isbn
+        favoriteBook.title = book.title
+        favoriteBook.author = book.author
+        favoriteBook.translator = book.translator
+        favoriteBook.thumbnail = book.thumbnailURL.absoluteString
+        favoriteBook.price = book.salePrice
+        favoriteBook.contents = book.contents
+        
+        saveContext()
+        
     }
 }

@@ -46,11 +46,9 @@ final class SearchListReactor: BaseReactor<
                 .catchAndReturn(Mutation.setSearchedBookDatas([]))
 
             return .concat(setQuery, searchResult)
+            
         case let .registerRecentBook(book):
-            CoreDataMaanger.shared.addRecentBook(
-                isbn: book.isbn,
-                title: book.title,
-                thumbnail: book.thumbnailURL.absoluteString)
+            CoreDataMaanger.shared.addRecentBook(book: book)
             return .empty() // Mutation이 없어서 reduce를 안탄다.
         }
     }
