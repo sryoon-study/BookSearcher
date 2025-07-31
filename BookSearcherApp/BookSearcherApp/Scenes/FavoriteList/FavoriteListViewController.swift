@@ -17,7 +17,15 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    #if DEBUG
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let tmp = CoreDataMaanger.shared.fetchAllFavoriteBooks()
+        tmp.forEach { print($0.title) }
+    }
+    #endif
+    
     override func setupUI() {
         view.backgroundColor = .systemOrange
     }

@@ -141,9 +141,8 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
             .disposed(by: disposeBag)
         
         favoriteButton.rx.tap
-            .bind {
-                print("책 담기 완료!") // 후속 작업으로 즐겨찾기 저장 처리 가능
-            }
+            .map { .addFavoriteBook(book) }
+            .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
 

@@ -96,7 +96,7 @@ final class CoreDataMaanger {
         saveContext()
     }
     
-    // 최근본 책전부 삭제용 코드
+    // 최근 본 책전부 삭제용 코드
     func deleteAllRecentBooks() {
         let books = fetchAllRecentBooks()
         books.forEach { context.delete($0) }
@@ -105,7 +105,9 @@ final class CoreDataMaanger {
     
     // MARK: 즐겨찾기 관련 함수
     
-    func createFavoritebook(book: SearchedBookData) {
+    func createFavoriteBook(book: SearchedBookData) {
+        guard fetchOneFavoriteBook(isbn: book.isbn) == nil else { return }
+        
         let favoriteBook = FavoriteBook(context: context)
         favoriteBook.isbn = book.isbn
         favoriteBook.title = book.title
@@ -116,6 +118,35 @@ final class CoreDataMaanger {
         favoriteBook.contents = book.contents
         
         saveContext()
-        
     }
+    
+    func fetchAllFavoriteBooks() -> [FavoriteBook] {
+        let fetchRequest: NSFetchRequest<FavoriteBook> = FavoriteBook.fetchRequest()
+        return (try? context.fetch(fetchRequest)) ?? []
+    }
+    
+    func fetchOneFavoriteBook(isbn: String) -> FavoriteBook? {
+        let fetchRequest: NSFetchRequest<FavoriteBook> = FavoriteBook.fetchRequest()
+        fetchRequest.predicate = NSCompoundPredicate(format: "isbn == %@", isbn)
+        fetchRequest.fetchLimit = 1
+        
+        return try? context.fetch(fetchRequest).first
+    }
+    
+    
+    func deleteOneFavoriteBook(isbn: String) {
+        guard let book = fetchOneFavoriteBook(isbn: isbn) else { return }
+        context.delete(book)
+        
+        saveContext()
+    }
+    
+    func deleteAllFavoriteBooks() {
+        let books = fetchAllFavoriteBooks()
+        books.forEach { context.delete($0) }
+        
+        saveContext()
+    }
+
+    
 }
