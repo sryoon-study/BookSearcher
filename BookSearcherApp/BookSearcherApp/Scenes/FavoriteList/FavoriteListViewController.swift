@@ -29,13 +29,14 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         fatalError("init(coder:) has not been implemented")
     }
 
-    #if DEBUG
-        override func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            let tmp = CoreDataMaanger.shared.fetchAllFavoriteBooks()
-            tmp.forEach { print($0.title) }
-        }
-    #endif
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        reactor?.action.onNext(.reloadFavoriteBooks)
+        
+        let favoriteBooks = CoreDataMaanger.shared.fetchAllFavoriteBooks()
+        favoriteBooks.forEach { print($0.title) }
+    }
+    
 
     
     override func setupUI() {
