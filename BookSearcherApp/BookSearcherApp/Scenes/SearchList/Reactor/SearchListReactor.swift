@@ -10,6 +10,7 @@ final class SearchListReactor: BaseReactor<
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
         case search(String)
+        case registerRecentBook(SearchedBookData)
     }
 
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
@@ -45,6 +46,12 @@ final class SearchListReactor: BaseReactor<
                 .catchAndReturn(Mutation.setSearchedBookDatas([]))
 
             return .concat(setQuery, searchResult)
+        case let .registerRecentBook(book):
+            CoreDataMaanger.shared.addRecentBook(
+                isbn: book.isbn,
+                title: book.title,
+                thumbnail: book.thumbnailURL.absoluteString)
+            return .empty() // Mutation이 없어서 reduce를 안탄다.
         }
     }
 

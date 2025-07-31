@@ -24,8 +24,16 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
             thumbnailURL: URL(string: "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6397573%3Ftimestamp%3D20250716143638")!
         ),
     ]
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let tmp = CoreDataMaanger.shared.fetchAllRecentBooks()
+        tmp.forEach {
+            print($0.title)
+        }
+    }
 #endif
-       
+    
     lazy var collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: makeLayout()
@@ -121,7 +129,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top // 셀보다 위로
                 )
-
+                
                 let section = NSCollectionLayoutSection(group: layoutGroup)
                 section.boundarySupplementaryItems = [boundaryItem]
                 section.interGroupSpacing = 10
@@ -154,7 +162,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                 )
                 
                 boundaryItem.pinToVisibleBounds = true
-
+                
                 let section = NSCollectionLayoutSection(group: layoutGroup)
                 section.boundarySupplementaryItems = [boundaryItem]
                 section.interGroupSpacing = 20
@@ -176,47 +184,44 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        collectionView.rx.itemSelected
-            .bind { [weak self] indexPath in
-                guard
-                    let self,
-                    let item = self.collectionViewDataSource.itemIdentifier(for: indexPath),
-                    case let .searchedBook(book) = item
-                else { return }
-                
+        // 선택한 셀의 book데이터를 획득 withUnretained를 써서 약한 참조
+        let selectedBook = collectionView.rx.itemSelected
+            .withUnretained(collectionViewDataSource)
+            .compactMap { dataSoruce, indexPath in // nullalbe처리용 compactMap
+                dataSoruce.itemIdentifier(for: indexPath)
+            }
+            .compactMap { item in
+                if case let .searchedBook(book) = item { // 패턴 매칭 searchedBook일 때만 SearchedBookData를 꺼내서 반환
+                    return book
+                }
+                return nil
+            }
+            .share() // selectedBook을 구독하는 모든 옵저버에게 이벤트 공유, 없으면 구독할 때마다 이 옵저버블을 새롭게 만든다. 여기서는 2번
+        
+        // 모달 연결
+        selectedBook
+            .bind { [weak self] book in
                 let reactor = BookDetailReactor(book: book)
                 let detailVC = BookDetailViewController(reactor: reactor)
                 detailVC.modalPresentationStyle = .pageSheet
                 detailVC.modalTransitionStyle = .coverVertical
                 
                 if let sheet = detailVC.sheetPresentationController {
-                    sheet.detents = [.medium(), .large()]
+                    sheet.detents = [.medium(), .large()] // 사용할 수 있는 크기 모드
                     sheet.selectedDetentIdentifier = .large // 첫 출력 높이
                     sheet.prefersGrabberVisible = true // 상단 당김바
                     sheet.preferredCornerRadius = 20
                 }
-                
-                self.present(detailVC, animated: true)
+                self?.present(detailVC, animated: true)
             }
             .disposed(by: disposeBag)
         
-        // 앱 크래시
-//        collectionView.rx.modelSelected(SearchedBookData.self)
-//            .bind { [weak self] selectedBook in
-//                let reactor = BookDetailReactor(book: selectedBook)
-//                let detailVC = BookDetailViewController(reactor: reactor)
-//                detailVC.modalPresentationStyle = .pageSheet
-//                detailVC.modalTransitionStyle = .coverVertical
-//                
-//                if let sheet = detailVC.sheetPresentationController {
-//                    sheet.detents = [.medium(), .large()]
-//                    sheet.prefersGrabberVisible = true
-//                    sheet.preferredCornerRadius = 20
-//                }
-//                
-//                self?.present(detailVC, animated: true)
-//            }
-//            .disposed(by: disposeBag)
+        // 코어데이터 등록 액션
+        selectedBook
+            .map { .registerRecentBook($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         
         //  2. 상태를 UI로 바인딩
         reactor.state.map { $0.query }
