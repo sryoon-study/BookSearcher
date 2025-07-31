@@ -6,23 +6,18 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
-
-extension RecentBook {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<RecentBook> {
+public extension RecentBook {
+    @nonobjc class func fetchRequest() -> NSFetchRequest<RecentBook> {
         return NSFetchRequest<RecentBook>(entityName: "RecentBook")
     }
 
-    @NSManaged public var isbn: String
-    @NSManaged public var thumbnail: String
-    @NSManaged public var title: String
-    @NSManaged public var updateDate: Date
-
+    @NSManaged var isbn: String
+    @NSManaged var thumbnail: String
+    @NSManaged var title: String
+    @NSManaged var updateDate: Date
 }
 
-extension RecentBook : Identifiable {
-
-}
+extension RecentBook: Identifiable {}

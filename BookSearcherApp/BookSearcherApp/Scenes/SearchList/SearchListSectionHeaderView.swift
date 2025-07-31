@@ -13,9 +13,9 @@ final class SearchListSectionHeaderView: UICollectionReusableView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         addSubview(titleLabel)
-        
+
         titleLabel.snp.makeConstraints {
             $0.leading.top.bottom.trailing.equalToSuperview()
         }

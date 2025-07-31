@@ -24,7 +24,6 @@ class DataService: ReactiveCompatible {
                     completion(.failure(error))
                 }
             }
-        
     }
 }
 
@@ -44,4 +43,3 @@ extension Reactive where Base: DataService {
         }
     }
 }
-

@@ -2,7 +2,6 @@
 import UIKit
 
 extension UIButton.Configuration {
-    
     // 닫기 버튼 컨피그
     static var closed: UIButton.Configuration {
         var config = filled()
@@ -16,7 +15,7 @@ extension UIButton.Configuration {
         }
         return config
     }
-    
+
     // 즐겨찾기 추가 버튼 컨피그
     static var favoriteAdd: UIButton.Configuration {
         var config = filled()
@@ -30,7 +29,7 @@ extension UIButton.Configuration {
         }
         return config
     }
-    
+
     // 즐겨찾기 제거 버튼 컨피그
     static var favoriteRemove: UIButton.Configuration {
         var config = filled()

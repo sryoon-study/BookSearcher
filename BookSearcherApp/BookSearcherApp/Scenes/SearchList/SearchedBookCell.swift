@@ -27,19 +27,18 @@ final class SearchedBookCell: UICollectionViewCell {
         $0.font = UIFont.systemFont(ofSize: 12)
         $0.textColor = .label
     }
-    
+
     private let titleRow = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 4
     }
 
-
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         titleRow.addArrangedSubview(titleLabel)
         titleRow.addArrangedSubview(authorLabel)
-        
+
         contentView.addSubview(thumbnailImageView)
         contentView.addSubview(titleRow)
         contentView.addSubview(priceLabel)
@@ -48,18 +47,17 @@ final class SearchedBookCell: UICollectionViewCell {
             $0.leading.top.bottom.equalToSuperview()
             $0.width.equalTo(59)
         }
-        
+
         titleRow.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.equalTo(thumbnailImageView.snp.trailing).offset(8)
             $0.trailing.equalToSuperview()
         }
-        
+
         priceLabel.snp.makeConstraints {
             $0.bottom.equalToSuperview()
             $0.trailing.equalToSuperview()
         }
-        
     }
 
     @available(*, unavailable)

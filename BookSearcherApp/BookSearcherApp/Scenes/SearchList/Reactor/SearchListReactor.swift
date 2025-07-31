@@ -36,17 +36,18 @@ final class SearchListReactor: BaseReactor<
         let dataService = DataService()
         switch action {
         case let .search(query):
-            // 상태 반영
+            // 입력된 검색어 상태에 전달
             let setQuery = Observable.just(Mutation.setQuery(query))
 
+            // API에서 획득한 dto데이터를 SearchedBookData로 맵핑
             let searchResult = dataService.rx.searchBooks(query: query)
                 .map { dto in
                     Mutation.setSearchedBookDatas(dto.documents.map { SearchedBookData(from: $0) })
                 }
-                .catchAndReturn(Mutation.setSearchedBookDatas([]))
+                .catchAndReturn(Mutation.setSearchedBookDatas([])) // 오류시 []을 리턴
 
             return .concat(setQuery, searchResult)
-            
+
         case let .registerRecentBook(book):
             CoreDataMaanger.shared.addRecentBook(book: book)
             return .empty() // Mutation이 없어서 reduce를 안탄다.

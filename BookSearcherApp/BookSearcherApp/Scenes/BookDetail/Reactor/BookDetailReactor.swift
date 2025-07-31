@@ -36,7 +36,7 @@ final class BookDetailReactor: BaseReactor<
         case .toggleFavorite:
             let book = currentState.book
             let isCurrentFavorite = currentState.isFavorite
-            
+
             if isCurrentFavorite { // 현재 즐겨찾기 상태면 -> 삭제
                 CoreDataMaanger.shared.deleteOneFavoriteBook(isbn: book.isbn)
             } else { // 즐겨찾기 상태가 아니면 -> 추가

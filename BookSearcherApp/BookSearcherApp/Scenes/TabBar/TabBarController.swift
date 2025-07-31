@@ -35,7 +35,6 @@ class TabBarController: UITabBarController {
         let favoriteNav = UINavigationController(rootViewController: favoriteListVC)
         viewControllers = [searchNav, favoriteNav]
     }
-    
 
     // 선택시 애니메이션 효과
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
