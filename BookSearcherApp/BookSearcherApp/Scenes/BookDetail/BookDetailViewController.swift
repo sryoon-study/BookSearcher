@@ -40,27 +40,8 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
         $0.numberOfLines = 0
     }
     
-    private let closeButton = UIButton(configuration: .filled()).then {
-        $0.configuration?.baseBackgroundColor = .systemGray6
-        $0.configuration?.title = "닫기"
-        $0.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-            outgoing.foregroundColor = UIColor.label
-            return outgoing
-        }
-    }
-    
-    private let favoriteButton = UIButton(configuration: .filled()).then {
-        $0.configuration?.baseForegroundColor = .systemBlue
-        $0.configuration?.title = "즐겨찾기 추가"
-        $0.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-            outgoing.foregroundColor = UIColor.systemBackground
-            return outgoing
-        }
-    }
+    private let closeButton = UIButton(configuration: .closed)
+    private let favoriteButton = UIButton(configuration: .favoriteAdd)
     
     private let buttonStackView = UIStackView().then {
         $0.axis = .horizontal
@@ -133,6 +114,13 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
         priceLabel.text = book.salePrice
         contentsLabel.text = book.contents
         thumbnailImageView.kf.setImage(with: book.thumbnailURL)
+        
+        reactor.state.map { $0.isFavorite }
+            .distinctUntilChanged()
+            .bind { [weak self] isFavorite in
+                self?.favoriteButton.configuration = isFavorite ? .favoriteRemove : .favoriteAdd
+            }
+            .disposed(by: disposeBag)
 
         closeButton.rx.tap
             .bind { [weak self] in
@@ -141,7 +129,7 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
             .disposed(by: disposeBag)
         
         favoriteButton.rx.tap
-            .map { .addFavoriteBook(book) }
+            .map { .toggleFavorite }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
