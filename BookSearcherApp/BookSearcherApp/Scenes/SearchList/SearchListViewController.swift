@@ -43,10 +43,10 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
 
     private let searchController = UISearchController()
 
-    let searchObservable: Observable<Void> // 검색바 포커싱용 옵저버블
+    let focusSearchBarObservable: Observable<Void> // 검색바 포커싱용 옵저버블
 
     init(reactor: SearchListReactor, relay: Observable<Void>) {
-        searchObservable = relay
+        focusSearchBarObservable = relay
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
     }
@@ -178,7 +178,8 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     }
 
     override func bind(reactor: SearchListReactor) {
-        // 1. 사용자의 입력을 Action으로 바인딩
+        
+        // 서치바
         searchController.searchBar.rx.text.orEmpty
             .distinctUntilChanged()
             .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
@@ -224,7 +225,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
 
-        //  2. 상태를 UI로 바인딩
+        // 서치바 쿼리 바인딩
         reactor.state.map { $0.query }
             .distinctUntilChanged()
             .bind(to: searchController.searchBar.rx.text)
@@ -240,10 +241,12 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                 collectionViewDataSource?.apply(snapShot)
             }
             .disposed(by: disposeBag)
-
-        searchObservable
+        
+        // 담은 책에서 넘어온 릴레이 구독
+        focusSearchBarObservable
             .do(onNext: { [weak self] in
-                self?.tabBarController?.selectedIndex = 0
+//                self?.tabBarController?.selectedIndex = 0 // 탭바 이동 하드코딩 원본
+                self?.tabBarController?.switchTo(viewControllerType: SearchListViewController.self)
             })
 //            .delay(.milliseconds(5), scheduler: MainScheduler.instance) // 명시적으로 딜레이
             .observe(on: MainScheduler.asyncInstance) // DispatchQueue  다음 사이클로 넘기는 것
