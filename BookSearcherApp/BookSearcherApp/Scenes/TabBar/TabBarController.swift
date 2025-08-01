@@ -13,9 +13,9 @@ class TabBarController: UITabBarController {
         // 색상 설정
         tabBar.tintColor = .label
         tabBar.unselectedItemTintColor = .secondaryLabel
-        
+
         let focusSearchBar = PublishRelay<Void>() // 검색바 포커스용 릴레이
-        
+
         // 검색 목록 버튼
         let searchListReactor = SearchListReactor()
         let searchListVC = SearchListViewController(reactor: searchListReactor, relay: focusSearchBar.asObservable())
