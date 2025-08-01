@@ -1,6 +1,8 @@
 
 import UIKit
 
+import RxRelay
+
 class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -11,10 +13,12 @@ class TabBarController: UITabBarController {
         // 색상 설정
         tabBar.tintColor = .label
         tabBar.unselectedItemTintColor = .secondaryLabel
-
+        
+        let focusSearchBar = PublishRelay<Void>() // 검색바 포커스용 릴레이
+        
         // 검색 목록 버튼
         let searchListReactor = SearchListReactor()
-        let searchListVC = SearchListViewController(reactor: searchListReactor)
+        let searchListVC = SearchListViewController(reactor: searchListReactor, relay: focusSearchBar.asObservable())
         searchListVC.tabBarItem = UITabBarItem(
             title: "도서 검색",
             image: UIImage(systemName: "magnifyingglass"),
@@ -23,7 +27,7 @@ class TabBarController: UITabBarController {
 
         // 담은 책 버튼
         let favoriteListReactor = FavoriteListReactor()
-        let favoriteListVC = FavoriteListViewController(reactor: favoriteListReactor)
+        let favoriteListVC = FavoriteListViewController(reactor: favoriteListReactor, relay: focusSearchBar)
         favoriteListVC.tabBarItem = UITabBarItem(
             title: "담은 책",
             image: UIImage(systemName: "star"),

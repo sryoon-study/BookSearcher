@@ -28,9 +28,12 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
     private let searchController = UISearchController()
     
-    let deleteRelay = PublishRelay<Int>()
+    let deleteRelay = PublishRelay<Int>() // 삭제에서 쓰는 릴레이
     
-    init(reactor: FavoriteListReactor) {
+    let searchRelay: PublishRelay<Void> // 검색바 포커싱 릴레이
+    
+    init(reactor: FavoriteListReactor, relay: PublishRelay<Void>) {
+        self.searchRelay = relay
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
     }
@@ -56,7 +59,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
     }
     
-    // TODO: <Int, data> 안되는데
+    // TODO: <Int, data>로 변경
     func makeDataSource(_ collectionView: UICollectionView) -> UICollectionViewDiffableDataSource<Section, Item> {
         let favoriteBookCell = UICollectionView.CellRegistration<FavoriteBookCell, FavoriteBook> { cell, indexPath, bookdata in
             cell.configure(
@@ -81,8 +84,8 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         configuration.showsSeparators = false
         configuration.trailingSwipeActionsConfigurationProvider = { indexPath in
             UISwipeActionsConfiguration(actions: [
-                UIContextualAction(style: .destructive, title: "Delete", handler: { action, view, completion in
-                    self.deleteRelay.accept(indexPath.item)
+                UIContextualAction(style: .destructive, title: "Delete", handler: { [weak self] action, view, completion in
+                    self?.deleteRelay.accept(indexPath.item) // 여기서 삭제를 직접하지 않고 릴레이만 전달
                     completion(true)
                 })
             ])
@@ -97,15 +100,23 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
     
     override func bind(reactor: FavoriteListReactor) {
         
+        // 뷰 등장시 담은 책 목록 리로드
         rx.viewWillAppear.map { _ in .reloadFavoriteBooks }
         .bind(to: reactor.action)
         .disposed(by: disposeBag)
         
+        // 전부 삭제 버튼
         clearFavoriteButton.rx.tap
             .map { _ in .clearFavoriteBooks }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        // 추가 버튼
+        addFavoriteButton.rx.tap
+            .bind(to: searchRelay)
+            .disposed(by: disposeBag)
+        
+        // state 변동에 따른 스냅샷 apply
         reactor.state.map { $0.books }
             .bind { [weak collectionViewDataSource] favoriteBooks in
                 var snapShot = NSDiffableDataSourceSnapshot<Section, Item>()
@@ -115,6 +126,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
             }
             .disposed(by: disposeBag)
         
+        //  삭제 릴레이
         deleteRelay.map { .deleteFavoriteBook($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
