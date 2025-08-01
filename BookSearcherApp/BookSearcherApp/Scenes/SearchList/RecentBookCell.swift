@@ -13,9 +13,9 @@ final class RecentBookCell: UICollectionViewCell {
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = UIFont.systemFont(ofSize: 10, weight: .medium)
+        $0.font = UIFont.systemFont(ofSize: 13, weight: .medium)
         $0.textColor = .secondaryLabel
-        $0.numberOfLines = 2
+//        $0.numberOfLines = 2
     }
 
     override init(frame: CGRect) {
@@ -26,11 +26,15 @@ final class RecentBookCell: UICollectionViewCell {
 
         thumbnailImageView.snp.makeConstraints {
             $0.leading.top.trailing.equalToSuperview()
+//            $0.width.equalTo(59)
+//            $0.height.equalTo(thumbnailImageView.snp.width).multipliedBy(1.4)
         }
 
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(thumbnailImageView.snp.bottom).offset(5)
-            $0.centerX.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.lessThanOrEqualToSuperview()
+//            $0.height.equalTo(50)
         }
     }
 

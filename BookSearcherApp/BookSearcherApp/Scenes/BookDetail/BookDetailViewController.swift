@@ -9,8 +9,10 @@ import Then
 
 final class BookDetailViewController: BaseViewController<BookDetailReactor> {
     private let titleLabel = UILabel().then {
-        $0.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        $0.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         $0.textColor = .label
+        $0.numberOfLines = 0
+        $0.textAlignment = .center
     }
 
     private let authorLabel = UILabel().then {
@@ -19,7 +21,7 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
     }
 
     private let translatorLabel = UILabel().then {
-        $0.font = UIFont.systemFont(ofSize: 12)
+        $0.font = UIFont.systemFont(ofSize: 13)
         $0.textColor = .secondaryLabel
     }
 
@@ -34,7 +36,7 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
     }
 
     private let contentsLabel = UILabel().then {
-        $0.font = UIFont.systemFont(ofSize: 13)
+        $0.font = UIFont.systemFont(ofSize: 16)
         $0.textColor = .label
         $0.numberOfLines = 0
     }
@@ -76,6 +78,7 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().inset(20)
+            $0.leading.trailing.lessThanOrEqualToSuperview()
         }
         authorLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()

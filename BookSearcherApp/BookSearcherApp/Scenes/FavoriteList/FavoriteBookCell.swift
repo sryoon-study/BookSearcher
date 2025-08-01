@@ -13,18 +13,18 @@ final class FavoriteBookCell: UICollectionViewCell {
     }
 
     private let titleLabel = UILabel().then {
-        $0.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        $0.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         $0.textColor = .label
         $0.numberOfLines = 2
     }
 
     private let authorLabel = UILabel().then {
-        $0.font = UIFont.systemFont(ofSize: 10)
+        $0.font = UIFont.systemFont(ofSize: 13)
         $0.textColor = .secondaryLabel
     }
 
     private let priceLabel = UILabel().then {
-        $0.font = UIFont.systemFont(ofSize: 12)
+        $0.font = UIFont.systemFont(ofSize: 15)
         $0.textColor = .label
     }
 
