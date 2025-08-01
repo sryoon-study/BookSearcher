@@ -5,10 +5,11 @@ import Foundation
 import RxSwift
 
 class DataService: ReactiveCompatible {
-    func searchBooks(query: String, completion: @escaping (Result<BookResponseDTO, Error>) -> Void) {
+    func searchBooks(query: String, page: Int, completion: @escaping (Result<BookResponseDTO, Error>) -> Void) {
         let url = "https://dapi.kakao.com/v3/search/book"
         let parameters: Parameters = [
             "query": query,
+            "page": page,
         ]
 
         let headers: HTTPHeaders = [
@@ -28,9 +29,9 @@ class DataService: ReactiveCompatible {
 }
 
 extension Reactive where Base: DataService {
-    func searchBooks(query: String) -> Observable<BookResponseDTO> {
+    func searchBooks(query: String, page: Int) -> Observable<BookResponseDTO> {
         return Observable.create { [base] observer in
-            base.searchBooks(query: query) { result in
+            base.searchBooks(query: query, page: page) { result in
                 switch result {
                 case let .success(data):
                     observer.onNext(data)

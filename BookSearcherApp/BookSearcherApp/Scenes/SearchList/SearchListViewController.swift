@@ -240,6 +240,12 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                 self?.searchController.searchBar.becomeFirstResponder()
             }
             .disposed(by: disposeBag)
+        
+        // 스크롤이 최하단에 도달하는 것 감지
+        collectionView.rx.reachedBottom()
+            .map { .loadNextPage }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
 
     // 섹션
