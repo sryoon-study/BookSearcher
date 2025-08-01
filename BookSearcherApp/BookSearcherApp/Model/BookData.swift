@@ -1,19 +1,7 @@
 
 import Foundation
 
-struct RecentBookData: Hashable {
-    let isbn: String
-    let title: String
-    let thumbnailURL: URL
-
-    init(from bookdata: RecentBook) {
-        isbn = bookdata.isbn
-        title = bookdata.title
-        thumbnailURL = URL(string: bookdata.thumbnail) ?? URL(string: "https://placehold.co/120x174")!
-    }
-}
-
-struct SearchedBookData: Hashable {
+struct BookData: Hashable {
     let isbn: String
     let title: String
     let author: String

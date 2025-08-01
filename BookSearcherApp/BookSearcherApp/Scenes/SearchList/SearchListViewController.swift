@@ -52,7 +52,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
             cell.configure(title: bookData.title, thumbnailURL: URL(string: bookData.thumbnail)!)
         }
         
-        let searchedBookCellRegistration = UICollectionView.CellRegistration<SearchedBookCell, SearchedBookData> { cell, _, bookData in
+        let searchedBookCellRegistration = UICollectionView.CellRegistration<SearchedBookCell, BookData> { cell, _, bookData in
             cell.configure(title: bookData.title, author: bookData.author, salePrice: bookData.salePrice, thumbnailURL: bookData.thumbnailURL)
         }
         
@@ -199,9 +199,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                 self?.present(detailVC, animated: true)
             }
             .disposed(by: disposeBag)
-        
-        // do{} sideeffect -> 화면을 띄우고 faltmap -> rx.deallocate -> reload액션 전달
-        
+                
         // 코어데이터 등록 액션
         selectedBook
             .map { .registerRecentBook($0) }
@@ -220,7 +218,6 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                 reactor.state.map{$0.RecentBooks},
                 reactor.pulse {$0.$searchedBooks}
             )
-//            .observe(on: MainScheduler.asyncInstance)
             .bind { [weak collectionViewDataSource] (recentBooks, searchedBooks) in
                 var snapShot = NSDiffableDataSourceSnapshot<Section, Item>()
                 snapShot.appendSections([.recentBook])
@@ -254,6 +251,6 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     // 컬렉션 뷰에 넣을 아이템
     enum Item: Hashable {
         case recentBook(RecentBook)
-        case searchedBook(SearchedBookData)
+        case searchedBook(BookData)
     }
 }

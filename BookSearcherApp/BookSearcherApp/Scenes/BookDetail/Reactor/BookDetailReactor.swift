@@ -19,12 +19,12 @@ final class BookDetailReactor: BaseReactor<
 
     // View의 상태 정의 (현재 View의 상태값)
     struct State {
-        let book: SearchedBookData
+        let book: BookData
         var isFavorite: Bool
     }
 
     // 생성자에서 초기 상태 설정
-    init(book: SearchedBookData) {
+    init(book: BookData) {
         let isFavorite: Bool = CoreDataMaanger.shared.fetchOneFavoriteBook(isbn: book.isbn) != nil
         super.init(initialState: State(book: book, isFavorite: isFavorite))
     }

@@ -10,21 +10,21 @@ final class SearchListReactor: BaseReactor<
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
         case search(String)
-        case registerRecentBook(SearchedBookData)
+        case registerRecentBook(BookData)
         case reloadRecentBooks
     }
 
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
         case setQuery(String)
-        case setSearchedBookDatas([SearchedBookData])
+        case setSearchedBookDatas([BookData])
         case setRecentBooks([RecentBook])
     }
 
     // View의 상태 정의 (현재 View의 상태값)
     struct State {
         var query: String = ""
-        @Pulse var searchedBooks: [SearchedBookData] = []
+        @Pulse var searchedBooks: [BookData] = []
         var RecentBooks: [RecentBook] = []
     }
 
@@ -45,7 +45,7 @@ final class SearchListReactor: BaseReactor<
             // API에서 획득한 dto데이터를 SearchedBookData로 맵핑
             let searchResult = dataService.rx.searchBooks(query: query)
                 .map { dto in
-                    Mutation.setSearchedBookDatas(dto.documents.map { SearchedBookData(from: $0) })
+                    Mutation.setSearchedBookDatas(dto.documents.map { BookData(from: $0) })
                 }
                 .catchAndReturn(Mutation.setSearchedBookDatas([])) // 오류시 []을 리턴
 
@@ -53,7 +53,6 @@ final class SearchListReactor: BaseReactor<
 
         case let .registerRecentBook(book):
             CoreDataMaanger.shared.addRecentBook(book: book)
-            
             let books = CoreDataMaanger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
             
