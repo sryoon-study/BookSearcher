@@ -46,7 +46,7 @@ final class CoreDataMaanger {
         recentBook.price = book.salePrice
         recentBook.contents = book.contents
         recentBook.updateDate = Date()
-        
+
         saveContext()
     }
 

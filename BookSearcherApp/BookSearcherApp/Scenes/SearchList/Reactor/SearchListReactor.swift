@@ -55,7 +55,7 @@ final class SearchListReactor: BaseReactor<
             CoreDataMaanger.shared.addRecentBook(book: book)
             let books = CoreDataMaanger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
-            
+
         case .reloadRecentBooks:
             let books = CoreDataMaanger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
@@ -72,9 +72,8 @@ final class SearchListReactor: BaseReactor<
         case let .setSearchedBookDatas(books):
             newState.searchedBooks = books
         case let .setRecentBooks(books):
-            newState.RecentBooks = books.map {BookData(from: $0)}
+            newState.RecentBooks = books.map { BookData(from: $0) }
         }
         return newState
     }
-    
 }
