@@ -17,4 +17,9 @@ class BaseReactor<Action, Mutation, State>: Reactor {
     func reduce(state _: State, mutation _: Mutation) -> State {
         fatalError("reduce(state:mutation:) must be overridden")
     }
+
+    // state를 변경하는 행위는 이 transform을 타게되서 .observe를 일일이 넣어주지 않아도 된다.
+    func transform(state: Observable<State>) -> Observable<State> {
+        return state.observe(on: MainScheduler.instance)
+    }
 }
