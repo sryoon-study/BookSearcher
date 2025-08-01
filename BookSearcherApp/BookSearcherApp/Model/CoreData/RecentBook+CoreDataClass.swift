@@ -1,13 +1,9 @@
-//
-//  RecentBook+CoreDataClass.swift
-//  BookSearcherApp
-//
-//  Created by Yoon on 7/31/25.
-//
-//
 
-import CoreData
+
 import Foundation
+import CoreData
 
 @objc(RecentBook)
-public class RecentBook: NSManagedObject {}
+public class RecentBook: NSManagedObject {
+
+}

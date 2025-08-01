@@ -10,9 +10,13 @@
         <attribute name="translator" optional="YES" attributeType="String"/>
     </entity>
     <entity name="RecentBook" representedClassName="RecentBook" syncable="YES">
+        <attribute name="author" attributeType="String"/>
+        <attribute name="contents" attributeType="String"/>
         <attribute name="isbn" attributeType="String"/>
+        <attribute name="price" optional="YES" attributeType="String"/>
         <attribute name="thumbnail" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
+        <attribute name="translator" optional="YES" attributeType="String"/>
         <attribute name="updateDate" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
 </model>

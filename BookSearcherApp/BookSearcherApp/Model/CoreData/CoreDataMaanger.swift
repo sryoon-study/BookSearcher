@@ -40,9 +40,13 @@ final class CoreDataMaanger {
         let recentBook = RecentBook(context: context)
         recentBook.isbn = book.isbn
         recentBook.title = book.title
+        recentBook.author = book.author
+        recentBook.translator = book.translator
         recentBook.thumbnail = book.thumbnailURL.absoluteString
+        recentBook.price = book.salePrice
+        recentBook.contents = book.contents
         recentBook.updateDate = Date()
-
+        
         saveContext()
     }
 
