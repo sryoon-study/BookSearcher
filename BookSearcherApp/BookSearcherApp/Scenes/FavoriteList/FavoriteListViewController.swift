@@ -29,10 +29,10 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
     let deleteRelay = PublishRelay<Int>() // 삭제에서 쓰는 릴레이
 
-    let searchRelay: PublishRelay<Void> // 검색바 포커싱 릴레이
+    let focusSearchBarRelay: PublishRelay<Void> // 검색바 포커싱 릴레이
 
     init(reactor: FavoriteListReactor, relay: PublishRelay<Void>) {
-        searchRelay = relay
+        focusSearchBarRelay = relay
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
     }
@@ -108,7 +108,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
         // 추가 버튼
         addFavoriteButton.rx.tap
-            .bind(to: searchRelay)
+            .bind(to: focusSearchBarRelay)
             .disposed(by: disposeBag)
 
         // state 변동에 따른 스냅샷 apply
