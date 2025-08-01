@@ -48,8 +48,8 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     
     func makeDataSource(_ collectionView: UICollectionView) -> UICollectionViewDiffableDataSource<Section, Item> {
         // 셀 정의
-        let recentBookCellRegistration = UICollectionView.CellRegistration<RecentBookCell, RecentBook> { cell, _, bookData in
-            cell.configure(title: bookData.title, thumbnailURL: URL(string: bookData.thumbnail)!)
+        let recentBookCellRegistration = UICollectionView.CellRegistration<RecentBookCell, BookData> { cell, _, bookData in
+            cell.configure(title: bookData.title, thumbnailURL:bookData.thumbnailURL)
         }
         
         let searchedBookCellRegistration = UICollectionView.CellRegistration<SearchedBookCell, BookData> { cell, _, bookData in
@@ -175,10 +175,10 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
                 dataSoruce.itemIdentifier(for: indexPath)
             }
             .compactMap { item in
-                if case let .searchedBook(book) = item { // 패턴 매칭 searchedBook일 때만 SearchedBookData를 꺼내서 반환
+                switch item {
+                case let .recentBook(book), let .searchedBook(book):
                     return book
                 }
-                return nil
             }
             .share() // selectedBook을 구독하는 모든 옵저버에게 이벤트 공유, 없으면 구독할 때마다 이 옵저버블을 새롭게 만든다. 여기서는 share를 안하면 2번 타게 됨
         
@@ -250,7 +250,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     
     // 컬렉션 뷰에 넣을 아이템
     enum Item: Hashable {
-        case recentBook(RecentBook)
+        case recentBook(BookData)
         case searchedBook(BookData)
     }
 }

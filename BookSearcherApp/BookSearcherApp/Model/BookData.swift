@@ -9,7 +9,8 @@ struct BookData: Hashable {
     let thumbnailURL: URL
     let salePrice: String
     let contents: String
-
+    
+    // DTO용 이니셜라이저
     init(from dto: BookDTO) {
         isbn = dto.isbn
         title = dto.title
@@ -18,5 +19,18 @@ struct BookData: Hashable {
         thumbnailURL = URL(string: dto.thumbnail) ?? URL(string: "https://placehold.co/120x174")!
         salePrice = StringFormatter.formatPrice(dto.salePrice)
         contents = dto.contents
+    }
+}
+
+extension BookData {
+    // 코어데이터용 이니셜라이저
+    init(from recentBook: RecentBook) {
+        self.isbn = recentBook.isbn
+        self.title = recentBook.title
+        self.author = recentBook.author
+        self.translator = recentBook.translator
+        self.thumbnailURL = URL(string: recentBook.thumbnail) ?? URL(string: "https://placehold.co/120x174")!
+        self.salePrice = recentBook.price
+        self.contents = recentBook.contents
     }
 }

@@ -25,7 +25,7 @@ final class SearchListReactor: BaseReactor<
     struct State {
         var query: String = ""
         @Pulse var searchedBooks: [BookData] = []
-        var RecentBooks: [RecentBook] = []
+        var RecentBooks: [BookData] = []
     }
 
     // 생성자에서 초기 상태 설정
@@ -72,7 +72,7 @@ final class SearchListReactor: BaseReactor<
         case let .setSearchedBookDatas(books):
             newState.searchedBooks = books
         case let .setRecentBooks(books):
-            newState.RecentBooks = books
+            newState.RecentBooks = books.map {BookData(from: $0)}
         }
         return newState
     }
