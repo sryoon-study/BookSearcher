@@ -58,12 +58,12 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
     // TODO: <Int, data>로 변경
     func makeDataSource(_ collectionView: UICollectionView) -> UICollectionViewDiffableDataSource<Section, Item> {
-        let favoriteBookCell = UICollectionView.CellRegistration<FavoriteBookCell, FavoriteBook> { cell, _, bookdata in
+        let favoriteBookCell = UICollectionView.CellRegistration<FavoriteBookCell, FavoriteBook> { cell, _, bookData in
             cell.configure(
-                title: bookdata.title,
-                author: bookdata.author,
-                salePrice: bookdata.price,
-                thumbnailURL: URL(string: bookdata.thumbnail)!
+                title: bookData.title,
+                author: bookData.author,
+                salePrice: bookData.price,
+                thumbnailURL: URL(string: bookData.thumbnail)!
             )
         }
         let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
