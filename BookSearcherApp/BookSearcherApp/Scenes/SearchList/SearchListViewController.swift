@@ -218,7 +218,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
             )
             .bind { [weak collectionViewDataSource] recentBooks, searchedBooks in
                 var snapShot = NSDiffableDataSourceSnapshot<Section, Item>()
-                if !recentBooks.isEmpty { // 최근 본 책 영역은 비어있으면 출력하지 않음
+                if !recentBooks.isEmpty { // 최근 본 책 섹션은 비어있으면 출력하지 않음
                     snapShot.appendSections([.recentBook])
                     snapShot.appendItems(recentBooks.map { .recentBook($0) }, toSection: .recentBook)
                 }
