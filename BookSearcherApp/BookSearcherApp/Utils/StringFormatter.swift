@@ -7,7 +7,7 @@ enum StringFormatter {
 
         return count > 1 ? "\(first) 외 \(count - 1)명" : first
     }
-    
+
     // 가격 숫자 -> 문자열 포매팅
     static func formatPrice(_ price: Int) -> String {
         if price > 0 {
