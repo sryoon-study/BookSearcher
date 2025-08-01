@@ -3,9 +3,9 @@ import ReactorKit
 import RxSwift
 
 final class SearchListReactor: BaseReactor<
-    SearchListReactor.Action,
-    SearchListReactor.Mutation,
-    SearchListReactor.State
+SearchListReactor.Action,
+SearchListReactor.Mutation,
+SearchListReactor.State
 > {
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
@@ -14,7 +14,7 @@ final class SearchListReactor: BaseReactor<
         case reloadRecentBooks
         case loadNextPage
     }
-
+    
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
         case setQuery(String)
@@ -25,7 +25,7 @@ final class SearchListReactor: BaseReactor<
         case setIsLoading(Bool)
         case appendSearhedBookDatas([BookData], Int)
     }
-
+    
     // View의 상태 정의 (현재 View의 상태값)
     struct State {
         var query: String = ""
@@ -36,12 +36,12 @@ final class SearchListReactor: BaseReactor<
         var isLoading: Bool = false
         
     }
-
+    
     // 생성자에서 초기 상태 설정
     init() {
         super.init(initialState: State())
     }
-
+    
     // Action이 들어왔을 때 어떤 Mutation으로 바뀔지 정의
     // 사용자 입력 → 상태 변화 신호로 변환
     override func mutate(action: Action) -> Observable<Mutation> {
@@ -50,7 +50,7 @@ final class SearchListReactor: BaseReactor<
         case let .search(query):
             // 입력된 검색어 상태에 전달
             let setQuery = Observable.just(Mutation.setQuery(query))
-
+            
             // API에서 획득한 dto데이터를 SearchedBookData로 맵핑
             let searchResult = dataService.rx.searchBooks(query: query, page: 1)
                 .flatMap { dto in // 복수 개를 맵핑해야하니 flatMap
@@ -69,8 +69,11 @@ final class SearchListReactor: BaseReactor<
             return .concat(setQuery, .just(.setIsLoading(true)), searchResult, .just(.setIsLoading(false)))
             
         case .loadNextPage:
-            // 끝이거나 로딩중이면 거름
-            guard !currentState.isEnd, !currentState.isLoading else { return .empty() }
+            // 화면 끝이거나 / 로딩 중이거나 / 쿼리가 없을 때는 진입하지 못하게 막음
+            guard !currentState.isEnd,
+                  !currentState.isLoading,
+                  !currentState.query.isEmpty
+            else { return .empty() }
             
             let newPage = currentState.currentPage + 1
             let searchResult = dataService.rx.searchBooks(query: currentState.query, page: newPage)
@@ -82,18 +85,18 @@ final class SearchListReactor: BaseReactor<
                 }
             
             return .concat(.just(.setIsLoading(true)), searchResult, .just(.setIsLoading(false)))
-
+            
         case let .registerRecentBook(book):
             CoreDataMaanger.shared.addRecentBook(book: book)
             let books = CoreDataMaanger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
-
+            
         case .reloadRecentBooks:
             let books = CoreDataMaanger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
         }
     }
-
+    
     // Mutation이 발생했을 때 상태(State)를 실제로 바꿈
     // 상태 변화 신호 → 실제 상태 반영
     override func reduce(state: State, mutation: Mutation) -> State {
