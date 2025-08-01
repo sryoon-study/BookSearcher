@@ -11,18 +11,21 @@ final class SearchListReactor: BaseReactor<
     enum Action {
         case search(String)
         case registerRecentBook(SearchedBookData)
+        case reloadRecentBooks
     }
 
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
         case setQuery(String)
         case setSearchedBookDatas([SearchedBookData])
+        case setRecentBooks([RecentBook])
     }
 
     // View의 상태 정의 (현재 View의 상태값)
     struct State {
         var query: String = ""
         @Pulse var searchedBooks: [SearchedBookData] = []
+        var RecentBooks: [RecentBook] = []
     }
 
     // 생성자에서 초기 상태 설정
@@ -50,7 +53,13 @@ final class SearchListReactor: BaseReactor<
 
         case let .registerRecentBook(book):
             CoreDataMaanger.shared.addRecentBook(book: book)
-            return .empty() // Mutation이 없어서 reduce를 안탄다.
+            
+            let books = CoreDataMaanger.shared.fetchAllRecentBooks()
+            return .just(.setRecentBooks(books))
+            
+        case .reloadRecentBooks:
+            let books = CoreDataMaanger.shared.fetchAllRecentBooks()
+            return .just(.setRecentBooks(books))
         }
     }
 
@@ -63,7 +72,10 @@ final class SearchListReactor: BaseReactor<
             newState.query = query
         case let .setSearchedBookDatas(books):
             newState.searchedBooks = books
+        case let .setRecentBooks(books):
+            newState.RecentBooks = books
         }
         return newState
     }
+    
 }
