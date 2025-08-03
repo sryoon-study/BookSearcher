@@ -38,7 +38,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
         navigationItem.searchController?.searchBar.tintColor = .label
         navigationItem.searchController?.searchBar.setValue("취소", forKey: "cancelButtonText")
 
-        collectionView.register(SearchListSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderView")
+        collectionView.register(SearchListSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SearchListSectionHeaderView.identifier)
 
         collectionView.snp.makeConstraints {
             $0.directionalEdges.equalToSuperview()
@@ -68,7 +68,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
         // 섹션헤더의 데이터 설정
         dataSource.supplementaryViewProvider = { [weak dataSource] collectionView, kind, indexPath in
             guard let section = dataSource?.sectionIdentifier(for: indexPath.section) else { return nil }
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "HeaderView", for: indexPath) as! SearchListSectionHeaderView
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SearchListSectionHeaderView.identifier, for: indexPath) as! SearchListSectionHeaderView
             switch section {
             case .recentBook:
                 headerView.titleLabel.text = "최근 본 책"
