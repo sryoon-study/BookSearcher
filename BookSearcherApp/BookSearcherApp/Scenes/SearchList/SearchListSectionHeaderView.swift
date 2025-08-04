@@ -5,6 +5,8 @@ import SnapKit
 import Then
 
 final class SearchListSectionHeaderView: UICollectionReusableView {
+    static let identifier: String = "SearchListSectionHeaderView"
+
     let titleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 22, weight: .bold)
         $0.textColor = .label
