@@ -124,7 +124,13 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
         // 고정값 바인딩
         titleLabel.text = book.title
         authorLabel.text = book.author
-        translatorLabel.text = book.translator
+        if let translator = book.translator, !translator.isEmpty { // 역자가 있다면
+            translatorLabel.text = translator
+            translatorLabel.isHidden = false
+        } else { // 역자가 nil이거나 빈 문자열이면 히든
+            translatorLabel.isHidden = true
+        }
+
         priceLabel.text = book.salePrice
         contentsLabel.text = book.contents
         thumbnailImageView.kf.setImage(with: book.thumbnailURL)
@@ -147,6 +153,11 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
 
         // 즐겨찾기 버튼 탭
         favoriteButton.rx.tap
+            .do(onNext:  {
+                let generator = UIImpactFeedbackGenerator(style: .medium) // 진동 이벤트
+                generator.prepare()
+                generator.impactOccurred()
+            })
             .map { .toggleFavorite }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
