@@ -23,14 +23,14 @@ final class SearchListReactor: BaseReactor<
         case setIsEnd(Bool) // isEnd 값 세팅
         case setCurrentPage(Int) // 현제 페이지 세팅
         case setIsLoading(Bool) // isLodaing 세팅
-        case appendSearhedBookDatas([BookData], Int) // 다음 페이지 검색 내용 append
+        case appendSearchedBookDatas([BookData], Int) // 다음 페이지 검색 내용 append
     }
 
     // View의 상태 정의 (현재 View의 상태값)
     struct State {
         var query: String = ""
         @Pulse var searchedBooks: [BookData] = []
-        var RecentBooks: [BookData] = []
+        var recentBooks: [BookData] = []
         var isEnd: Bool = false
         var currentPage: Int = 1
         var isLoading: Bool = false
@@ -78,7 +78,7 @@ final class SearchListReactor: BaseReactor<
             let searchResult = dataService.rx.searchBooks(query: currentState.query, page: newPage)
                 .flatMap { dto in
                     Observable<Mutation>.of(
-                        .appendSearhedBookDatas(dto.documents.map { BookData(from: $0) }, newPage),
+                        .appendSearchedBookDatas(dto.documents.map { BookData(from: $0) }, newPage),
                         .setIsEnd(dto.meta.isEnd)
                     )
                 } // 다음 페이지 값으로 넘겨 API통신
@@ -107,14 +107,14 @@ final class SearchListReactor: BaseReactor<
             newState.searchedBooks = books
             newState.currentPage = pageNum
         case let .setRecentBooks(books):
-            newState.RecentBooks = books.map { BookData(from: $0) }
+            newState.recentBooks = books.map { BookData(from: $0) }
         case let .setIsEnd(isEnd):
             newState.isEnd = isEnd
         case let .setCurrentPage(currentPage):
             newState.currentPage = currentPage
         case let .setIsLoading(isLoading):
             newState.isLoading = isLoading
-        case let .appendSearhedBookDatas(books, pageNum):
+        case let .appendSearchedBookDatas(books, pageNum):
             newState.searchedBooks.append(contentsOf: books)
             newState.currentPage = pageNum
         }

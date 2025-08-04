@@ -222,7 +222,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
 
         Observable
             .combineLatest(
-                reactor.state.map { $0.RecentBooks },
+                reactor.state.map { $0.recentBooks },
                 reactor.pulse { $0.$searchedBooks }
             )
             .bind { [weak collectionViewDataSource] recentBooks, searchedBooks in
