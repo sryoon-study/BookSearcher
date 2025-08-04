@@ -1,7 +1,7 @@
-# BookSearcher
+# 📖 BookSearcher
 과제 페이지 : https://teamsparta.notion.site/Ch-3-Advance-2352dc3ef51480a192daf65bb3d7c487
 
-# 기술 스택
+# ⚙️ 기술 스택
 - **Architecture**: MVVM + ReactorKit
 - **Reactive**: RxSwift, RxCocoa
 - **UI**: UIKit + SnapKit + Then
@@ -9,7 +9,7 @@
 - **Image**: Kingfisher
 - **Network**: Alamofire
 
-# 폴더링
+# 🗂️ 폴더링
 ```
 📁 BookSearcherApp/
 ├── App/                     # 앱 진입점 (AppDelegate, SceneDelegate)
@@ -48,7 +48,7 @@
 - 중복 삭제 방지 처리 및 Empty 상태 처리
 
 
-## 시연
+## 📺 시연
 ![Simulator Screen Recording - iPhone 16 Pro - 2025-08-04 at 11 42 28](https://github.com/user-attachments/assets/0f8dbf34-3b9c-42d3-8147-7490b322490a)
 ![Simulator Screen Recording - iPhone 16 Pro - 2025-08-04 at 11 43 06](https://github.com/user-attachments/assets/527c592d-740b-4288-80c5-03f4b34985e0)
 ![Simulator Screen Recording - iPhone 16 Pro - 2025-08-04 at 11 44 24](https://github.com/user-attachments/assets/922e8b3a-1ae0-4918-b4af-3472b9ae58c7)
