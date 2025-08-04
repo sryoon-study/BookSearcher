@@ -256,6 +256,8 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
+    
+    
 
     // 섹션
     enum Section {

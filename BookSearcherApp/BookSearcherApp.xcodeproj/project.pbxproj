@@ -14,6 +14,7 @@
 		FE18C8F72E37556F00798B6E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = FE18C8F62E37556F00798B6E /* Kingfisher */; };
 		FE18C8FA2E37557C00798B6E /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = FE18C8F92E37557C00798B6E /* Alamofire */; };
 		FE18C8FD2E3755AA00798B6E /* ReactorKit in Frameworks */ = {isa = PBXBuildFile; productRef = FE18C8FC2E3755AA00798B6E /* ReactorKit */; };
+		FED0FE252E40772100F789FF /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = FED0FE242E40772100F789FF /* Algorithms */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 				FE18C8EF2E37552B00798B6E /* RxCocoa in Frameworks */,
 				FE18C8FD2E3755AA00798B6E /* ReactorKit in Frameworks */,
 				FE18C8EC2E37551100798B6E /* SnapKit in Frameworks */,
+				FED0FE252E40772100F789FF /* Algorithms in Frameworks */,
 				FE18C8FA2E37557C00798B6E /* Alamofire in Frameworks */,
 				FE18C8F42E37554300798B6E /* Then in Frameworks */,
 				FE18C8F72E37556F00798B6E /* Kingfisher in Frameworks */,
@@ -102,6 +104,7 @@
 				FE18C8F62E37556F00798B6E /* Kingfisher */,
 				FE18C8F92E37557C00798B6E /* Alamofire */,
 				FE18C8FC2E3755AA00798B6E /* ReactorKit */,
+				FED0FE242E40772100F789FF /* Algorithms */,
 			);
 			productName = BookSearcherApp;
 			productReference = FE18C7E92E3738D200798B6E /* BookSearcherApp.app */;
@@ -138,6 +141,7 @@
 				FE18C8F52E37556F00798B6E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				FE18C8F82E37557C00798B6E /* XCRemoteSwiftPackageReference "Alamofire" */,
 				FE18C8FB2E3755AA00798B6E /* XCRemoteSwiftPackageReference "ReactorKit" */,
+				FED0FE232E40772100F789FF /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FE18C7EA2E3738D200798B6E /* Products */;
@@ -413,6 +417,14 @@
 				minimumVersion = 3.2.0;
 			};
 		};
+		FED0FE232E40772100F789FF /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -450,6 +462,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FE18C8FB2E3755AA00798B6E /* XCRemoteSwiftPackageReference "ReactorKit" */;
 			productName = ReactorKit;
+		};
+		FED0FE242E40772100F789FF /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FED0FE232E40772100F789FF /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -1,6 +1,8 @@
 
+import Algorithms
 import ReactorKit
 import RxSwift
+
 
 final class SearchListReactor: BaseReactor<
     SearchListReactor.Action,
@@ -104,7 +106,7 @@ final class SearchListReactor: BaseReactor<
         case let .setQuery(query):
             newState.query = query
         case let .setSearchedBookDatas(books, pageNum):
-            newState.searchedBooks = books
+            newState.searchedBooks = Array(books.uniqued()) // API에서 중복된 값을 던져줬을 때 대비
             newState.currentPage = pageNum
         case let .setRecentBooks(books):
             newState.recentBooks = books.map { BookData(from: $0) }
@@ -115,7 +117,8 @@ final class SearchListReactor: BaseReactor<
         case let .setIsLoading(isLoading):
             newState.isLoading = isLoading
         case let .appendSearchedBookDatas(books, pageNum):
-            newState.searchedBooks.append(contentsOf: books)
+            let appendBooks = newState.searchedBooks + books
+            newState.searchedBooks = Array(appendBooks.uniqued())  // API에서 중복된 값을 던져줬을 때 대비
             newState.currentPage = pageNum
         }
         return newState
