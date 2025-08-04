@@ -10,7 +10,7 @@ final class FavoriteListReactor: BaseReactor<
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
         case reloadFavoriteBooks // 즐겨찾기 목록 로딩
-        case deleteFavoriteBook(Int) // 즐겨찾기 1건 삭제
+        case deleteFavoriteBook(FavoriteBook) // 즐겨찾기 1건 삭제
         case clearFavoriteBooks // 즐겨찾기 전부삭제
     }
 
@@ -37,9 +37,8 @@ final class FavoriteListReactor: BaseReactor<
         case .reloadFavoriteBooks:
             let books = CoreDataManger.shared.fetchAllFavoriteBooks()
             return .just(.setFavoriteBooks(books))
-        case let .deleteFavoriteBook(index):
-            let isbn = currentState.books[index].isbn
-            CoreDataManger.shared.deleteOneFavoriteBook(isbn: isbn)
+        case let .deleteFavoriteBook(book):
+            CoreDataManger.shared.deleteOneFavoriteBook(isbn: book.isbn)
             let books = CoreDataManger.shared.fetchAllFavoriteBooks()
             return .just(.setFavoriteBooks(books))
         case .clearFavoriteBooks:

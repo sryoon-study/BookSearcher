@@ -32,7 +32,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
     private let searchController = UISearchController() // 서치 컨트롤러
 
-    let deleteRelay = PublishRelay<Int>() // 삭제에서 쓰는 릴레이
+    let deleteRelay = PublishRelay<FavoriteBook>() // 삭제에서 쓰는 릴레이
 
     let focusSearchBarRelay: PublishRelay<Void> // 검색바 포커싱 릴레이
 
@@ -92,8 +92,13 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
         // 삭제 기능 설정
         configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
+            //해당 인덱스패스의 아이템이 있는지, .favoriteBooks(book)의 패턴인지 판별
+            guard let book = self?.collectionViewDataSource.itemIdentifier(for: indexPath),
+                    case let .favoriteBooks(book) = book else {
+                return UISwipeActionsConfiguration(actions: []) // 빈 액션 리턴
+            }
             let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
-                self?.deleteRelay.accept(indexPath.item) // 릴레이에 indexPath 전달
+                self?.deleteRelay.accept(book) // 릴레이에 FavoriteBook 전달
                 completion(true)
             }
 
