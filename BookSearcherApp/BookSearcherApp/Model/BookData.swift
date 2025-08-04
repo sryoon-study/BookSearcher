@@ -20,12 +20,12 @@ struct BookData: Hashable {
         salePrice = StringFormatter.formatPrice(dto.salePrice)
         contents = dto.contents
     }
-    
+
     // isbn 기준으로 중복값 판정
     func hash(into hasher: inout Hasher) {
         hasher.combine(isbn)
     }
-    
+
     // == 연산은 상황에 따라 판단하고 추가
     static func == (lhs: BookData, rhs: BookData) -> Bool {
         return lhs.isbn == rhs.isbn
