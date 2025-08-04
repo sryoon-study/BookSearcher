@@ -74,18 +74,27 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         }
         return dataSource
     }
+    
+
 
     func makeLayout() -> UICollectionViewLayout {
         var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
         configuration.showsSeparators = false
-        configuration.trailingSwipeActionsConfigurationProvider = { indexPath in
-            UISwipeActionsConfiguration(actions: [
-                UIContextualAction(style: .destructive, title: "Delete", handler: { [weak self] _, _, completion in
-                    self?.deleteRelay.accept(indexPath.item) // 여기서 삭제를 직접하지 않고 릴레이만 전달
-                    completion(true)
-                }),
-            ])
+        
+        configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
+            let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
+                self?.deleteRelay.accept(indexPath.item)
+                completion(true)
+            }
+            
+            deleteAction.image = UIImage(systemName: "trash")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal) // SF Symbol 아이콘 추가
+            deleteAction.backgroundColor = .systemBackground // 배경색 변경
+
+            let config = UISwipeActionsConfiguration(actions: [deleteAction])
+            config.performsFirstActionWithFullSwipe = false // 스와이프만으로 삭제 방지
+            return config
         }
+
         return UICollectionViewCompositionalLayout { _, environment in
             NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: environment).then { section in
                 section.contentInsets = .init(top: 10, leading: 20, bottom: 10, trailing: 20)
