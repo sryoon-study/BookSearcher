@@ -140,12 +140,20 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         rx.viewWillAppear.map { _ in .reloadFavoriteBooks }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-
-        // 전부 삭제 버튼
+        
+        // 전부 삭제
         clearFavoriteButton.rx.tap
-            .map { _ in .clearFavoriteBooks }
+            .withUnretained(self)
+            .flatMap { `self`, _ in
+                UIAlertController.rx.alert(on: self, title: "전체 삭제", message: "담은 책을 모두 삭제하시겠습니까?", actions: [
+                    .cancel("취소"),
+                    .destructive("삭제", payload: .clearFavoriteBooks)
+                ])
+            }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+            
+
 
         // 추가 버튼
         addFavoriteButton.rx.tap
@@ -175,7 +183,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }
-
+    
     // 섹션
     enum Section {
         case favoriteBooks

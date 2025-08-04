@@ -17,7 +17,7 @@ final class FavoriteListReactor: BaseReactor<
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
         case setFavoriteBooks([FavoriteBook]) // 즐겨찾기 세팅 뮤테이션
-        case setDeleting(Bool)
+        case setDeleting(Bool) // isDeleting 세팅
     }
 
     // View의 상태 정의 (현재 View의 상태값)
