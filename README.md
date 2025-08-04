@@ -4,7 +4,7 @@
 # 기술 스택
 - **Architecture**: MVVM + ReactorKit
 - **Reactive**: RxSwift, RxCocoa
-- **UI**: UIKit + SnapKit
+- **UI**: UIKit + SnapKit + Then
 - **Data Persistence**: CoreData
 - **Image**: Kingfisher
 - **Network**: Alamofire
