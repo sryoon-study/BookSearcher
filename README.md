@@ -8,6 +8,7 @@
 - **Data Persistence**: CoreData
 - **Image**: Kingfisher
 - **Network**: Alamofire
+- **Etc**: swift-algorithms
 
 # 🗂️ 폴더링
 ```
@@ -51,5 +52,4 @@
 ## 📺 시연
 ![Simulator Screen Recording - iPhone 16 Pro - 2025-08-04 at 11 42 28](https://github.com/user-attachments/assets/0f8dbf34-3b9c-42d3-8147-7490b322490a)
 ![Simulator Screen Recording - iPhone 16 Pro - 2025-08-04 at 11 43 06](https://github.com/user-attachments/assets/527c592d-740b-4288-80c5-03f4b34985e0)
-![Simulator Screen Recording - iPhone 16 Pro - 2025-08-04 at 11 44 24](https://github.com/user-attachments/assets/922e8b3a-1ae0-4918-b4af-3472b9ae58c7)
-
+![Simulator Screen Recording - iPhone 16 Pro - 2025-08-04 at 15 02 49](https://github.com/user-attachments/assets/5cc88037-12cb-4137-94f2-de1cb0b3a2b7)
