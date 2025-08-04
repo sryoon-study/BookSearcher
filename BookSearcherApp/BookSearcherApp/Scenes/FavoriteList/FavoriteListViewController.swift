@@ -26,6 +26,17 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         frame: .zero,
         collectionViewLayout: makeLayout()
     )
+    
+    // 빈 화면 뷰
+    private let emptyView = UILabel().then {
+        $0.text = "담은 책이 없습니다"
+        $0.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        $0.textColor = .secondaryLabel
+        $0.textAlignment = .center
+        $0.numberOfLines = 0
+        $0.isHidden = true
+    }
+
 
     // 컬렉션뷰 데이터 소스
     lazy var collectionViewDataSource = makeDataSource(collectionView)
@@ -53,10 +64,16 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
         // 뷰 주입
         view.addSubview(collectionView)
+        view.addSubview(emptyView)
 
         // 오토 레이아웃
         collectionView.snp.makeConstraints {
             $0.directionalEdges.equalToSuperview()
+        }
+        
+        emptyView.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(40)
         }
 
         // 네비게이션 아이템 설정
@@ -137,11 +154,20 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
         // state 변동에 따른 스냅샷 apply
         reactor.state.map { $0.books }
-            .bind { [weak collectionViewDataSource] favoriteBooks in
+            .bind { [weak self, weak collectionViewDataSource] favoriteBooks in
+                guard let self else { return }
                 var snapShot = NSDiffableDataSourceSnapshot<Section, Item>()
-                snapShot.appendSections([.favoriteBooks])
-                snapShot.appendItems(favoriteBooks.map { .favoriteBooks($0) }, toSection: .favoriteBooks)
-                collectionViewDataSource?.apply(snapShot)
+
+                if favoriteBooks.isEmpty { // 책이 없으면 emptyView 띄움
+                    self.emptyView.isHidden = false
+                    collectionViewDataSource?.apply(snapShot)
+                }else {
+                    self.emptyView.isHidden = true
+                    snapShot.appendSections([.favoriteBooks])
+                    snapShot.appendItems(favoriteBooks.map { .favoriteBooks($0) }, toSection: .favoriteBooks)
+                    collectionViewDataSource?.apply(snapShot)
+                }
+                
             }
             .disposed(by: disposeBag)
 
