@@ -26,7 +26,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         frame: .zero,
         collectionViewLayout: makeLayout()
     )
-    
+
     // 빈 화면 뷰
     private let emptyView = UILabel().then {
         $0.text = "담은 책이 없습니다"
@@ -36,7 +36,6 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         $0.numberOfLines = 0
         $0.isHidden = true
     }
-
 
     // 컬렉션뷰 데이터 소스
     lazy var collectionViewDataSource = makeDataSource(collectionView)
@@ -70,7 +69,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         collectionView.snp.makeConstraints {
             $0.directionalEdges.equalToSuperview()
         }
-        
+
         emptyView.snp.makeConstraints {
             $0.center.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(40)
@@ -109,9 +108,10 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
         // 삭제 기능 설정
         configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
-            //해당 인덱스패스의 아이템이 있는지, .favoriteBooks(book)의 패턴인지 판별
+            // 해당 인덱스패스의 아이템이 있는지, .favoriteBooks(book)의 패턴인지 판별
             guard let book = self?.collectionViewDataSource.itemIdentifier(for: indexPath),
-                    case let .favoriteBooks(book) = book else {
+                  case let .favoriteBooks(book) = book
+            else {
                 return UISwipeActionsConfiguration(actions: []) // 빈 액션 리턴
             }
             let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
@@ -161,13 +161,12 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
                 if favoriteBooks.isEmpty { // 책이 없으면 emptyView 띄움
                     self.emptyView.isHidden = false
                     collectionViewDataSource?.apply(snapShot)
-                }else {
+                } else {
                     self.emptyView.isHidden = true
                     snapShot.appendSections([.favoriteBooks])
                     snapShot.appendItems(favoriteBooks.map { .favoriteBooks($0) }, toSection: .favoriteBooks)
                     collectionViewDataSource?.apply(snapShot)
                 }
-                
             }
             .disposed(by: disposeBag)
 

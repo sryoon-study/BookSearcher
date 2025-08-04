@@ -153,7 +153,7 @@ final class BookDetailViewController: BaseViewController<BookDetailReactor> {
 
         // 즐겨찾기 버튼 탭
         favoriteButton.rx.tap
-            .do(onNext:  {
+            .do(onNext: {
                 let generator = UIImpactFeedbackGenerator(style: .medium) // 진동 이벤트
                 generator.prepare()
                 generator.impactOccurred()
