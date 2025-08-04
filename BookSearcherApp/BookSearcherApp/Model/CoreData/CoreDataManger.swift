@@ -2,9 +2,9 @@
 import CoreData
 import UIKit
 
-final class CoreDataMaanger {
+final class CoreDataManger {
     // 싱글톤 패턴
-    static let shared = CoreDataMaanger()
+    static let shared = CoreDataManger()
 
     private init() {}
 

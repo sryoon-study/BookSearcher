@@ -9,24 +9,26 @@ final class FavoriteListReactor: BaseReactor<
 > {
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
-        case reloadFavoriteBooks
-        case deleteFavoriteBook(Int)
-        case clearFavoriteBooks
+        case reloadFavoriteBooks // 즐겨찾기 목록 로딩
+        case deleteFavoriteBook(FavoriteBook) // 즐겨찾기 1건 삭제
+        case clearFavoriteBooks // 즐겨찾기 전부삭제
     }
 
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
-        case setFavoriteBooks([FavoriteBook])
+        case setFavoriteBooks([FavoriteBook]) // 즐겨찾기 세팅 뮤테이션
+        case setDeleting(Bool)
     }
 
     // View의 상태 정의 (현재 View의 상태값)
     struct State {
         var books: [FavoriteBook]
+        var isDeleting: Bool = false
     }
 
     // 생성자에서 초기 상태 설정
     init() {
-        let favoriteBooks = CoreDataMaanger.shared.fetchAllFavoriteBooks()
+        let favoriteBooks = CoreDataManger.shared.fetchAllFavoriteBooks()
         super.init(initialState: State(books: favoriteBooks))
     }
 
@@ -35,16 +37,17 @@ final class FavoriteListReactor: BaseReactor<
     override func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .reloadFavoriteBooks:
-            let books = CoreDataMaanger.shared.fetchAllFavoriteBooks()
+            let books = CoreDataManger.shared.fetchAllFavoriteBooks()
             return .just(.setFavoriteBooks(books))
-        case let .deleteFavoriteBook(index):
-            let isbn = currentState.books[index].isbn
-            CoreDataMaanger.shared.deleteOneFavoriteBook(isbn: isbn)
-            let books = CoreDataMaanger.shared.fetchAllFavoriteBooks()
-            return .just(.setFavoriteBooks(books))
+        case let .deleteFavoriteBook(book):
+            guard !currentState.isDeleting else { return .empty() } // 삭제중이면 접근금지 -> 중복삭제 회피
+            CoreDataManger.shared.deleteOneFavoriteBook(isbn: book.isbn)
+            let books = CoreDataManger.shared.fetchAllFavoriteBooks()
+            return .concat(.just(.setDeleting(true)), .just(.setFavoriteBooks(books)), .just(.setDeleting(false)))
         case .clearFavoriteBooks:
-            CoreDataMaanger.shared.deleteAllFavoriteBooks()
-            return .just(.setFavoriteBooks([]))
+            guard !currentState.isDeleting else { return .empty() } // 삭제중이면 접근금지 -> 중복삭제 회피
+            CoreDataManger.shared.deleteAllFavoriteBooks()
+            return .concat(.just(.setDeleting(true)), .just(.setFavoriteBooks([])), .just(.setDeleting(false)))
         }
     }
 
@@ -55,6 +58,8 @@ final class FavoriteListReactor: BaseReactor<
         switch mutation {
         case let .setFavoriteBooks(books):
             newState.books = books
+        case let .setDeleting(isDeleting):
+            newState.isDeleting = isDeleting
         }
         return newState
     }

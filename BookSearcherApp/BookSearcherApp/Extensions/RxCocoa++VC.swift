@@ -3,6 +3,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
+// 뷰 라이프사이클을 Rx와 연결시킬 수 있는 코드
 extension Reactive where Base: UIViewController {
     var viewDidLoad: ControlEvent<Void> {
         let source = methodInvoked(#selector(Base.viewDidLoad)).map { _ in }

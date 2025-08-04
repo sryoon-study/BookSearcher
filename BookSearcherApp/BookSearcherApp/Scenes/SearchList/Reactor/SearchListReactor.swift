@@ -9,28 +9,28 @@ final class SearchListReactor: BaseReactor<
 > {
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
-        case search(String)
-        case registerRecentBook(BookData)
-        case reloadRecentBooks
-        case loadNextPage
+        case search(String) // 검색
+        case registerRecentBook(BookData) // 최근 본 책 등록
+        case reloadRecentBooks // 최근 본 책 리로드
+        case loadNextPage // 다음 페이지 로드
     }
 
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
-        case setQuery(String)
-        case setSearchedBookDatas([BookData], Int)
-        case setRecentBooks([RecentBook])
-        case setIsEnd(Bool)
-        case setCurrentPage(Int)
-        case setIsLoading(Bool)
-        case appendSearhedBookDatas([BookData], Int)
+        case setQuery(String) // 쿼리값 세팅
+        case setSearchedBookDatas([BookData], Int) // 검색데이터 세팅 (검색정보, 페이지번호)
+        case setRecentBooks([RecentBook]) // 최근 본 책 세팅
+        case setIsEnd(Bool) // isEnd 값 세팅
+        case setCurrentPage(Int) // 현제 페이지 세팅
+        case setIsLoading(Bool) // isLodaing 세팅
+        case appendSearchedBookDatas([BookData], Int) // 다음 페이지 검색 내용 append
     }
 
     // View의 상태 정의 (현재 View의 상태값)
     struct State {
         var query: String = ""
         @Pulse var searchedBooks: [BookData] = []
-        var RecentBooks: [BookData] = []
+        var recentBooks: [BookData] = []
         var isEnd: Bool = false
         var currentPage: Int = 1
         var isLoading: Bool = false
@@ -74,24 +74,24 @@ final class SearchListReactor: BaseReactor<
                   !currentState.query.isEmpty
             else { return .empty() }
 
-            let newPage = currentState.currentPage + 1
+            let newPage = currentState.currentPage + 1 // 현재 페이지 번호 +1
             let searchResult = dataService.rx.searchBooks(query: currentState.query, page: newPage)
                 .flatMap { dto in
                     Observable<Mutation>.of(
-                        .appendSearhedBookDatas(dto.documents.map { BookData(from: $0) }, newPage),
+                        .appendSearchedBookDatas(dto.documents.map { BookData(from: $0) }, newPage),
                         .setIsEnd(dto.meta.isEnd)
                     )
-                }
+                } // 다음 페이지 값으로 넘겨 API통신
 
             return .concat(.just(.setIsLoading(true)), searchResult, .just(.setIsLoading(false)))
 
         case let .registerRecentBook(book):
-            CoreDataMaanger.shared.addRecentBook(book: book)
-            let books = CoreDataMaanger.shared.fetchAllRecentBooks()
+            CoreDataManger.shared.addRecentBook(book: book)
+            let books = CoreDataManger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
 
         case .reloadRecentBooks:
-            let books = CoreDataMaanger.shared.fetchAllRecentBooks()
+            let books = CoreDataManger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
         }
     }
@@ -107,14 +107,14 @@ final class SearchListReactor: BaseReactor<
             newState.searchedBooks = books
             newState.currentPage = pageNum
         case let .setRecentBooks(books):
-            newState.RecentBooks = books.map { BookData(from: $0) }
+            newState.recentBooks = books.map { BookData(from: $0) }
         case let .setIsEnd(isEnd):
             newState.isEnd = isEnd
         case let .setCurrentPage(currentPage):
             newState.currentPage = currentPage
         case let .setIsLoading(isLoading):
             newState.isLoading = isLoading
-        case let .appendSearhedBookDatas(books, pageNum):
+        case let .appendSearchedBookDatas(books, pageNum):
             newState.searchedBooks.append(contentsOf: books)
             newState.currentPage = pageNum
         }

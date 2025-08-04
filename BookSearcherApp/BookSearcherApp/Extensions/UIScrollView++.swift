@@ -3,6 +3,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
+// 스크롤뷰 최하단 감지
 extension Reactive where Base: UIScrollView {
     func reachedBottom(offset: CGFloat = 0.0) -> ControlEvent<Void> {
         let source = contentOffset

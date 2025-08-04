@@ -5,8 +5,9 @@ import SnapKit
 import Then
 
 final class SearchListSectionHeaderView: UICollectionReusableView {
-    static let identifier: String = "SearchListSectionHeaderView"
+    static let identifier: String = "SearchListSectionHeaderView" // 헤더뷰 이름
 
+    // 제목
     let titleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 22, weight: .bold)
         $0.textColor = .label
@@ -16,8 +17,10 @@ final class SearchListSectionHeaderView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+        // 뷰 주입
         addSubview(titleLabel)
 
+        // 오토 레이아웃
         titleLabel.snp.makeConstraints {
             $0.leading.top.bottom.trailing.equalToSuperview()
         }

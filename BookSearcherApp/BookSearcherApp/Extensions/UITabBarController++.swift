@@ -2,6 +2,7 @@
 import UIKit
 
 extension UITabBarController {
+    // 이동하려는 뷰 컨트롤러의 인덱스 찾기
     // T는 UIViewController를 상속한 타입만 받을 수 있게 제한
     func switchTo<T: UIViewController>(viewControllerType _: T.Type) {
         // UITabBarController`의 `viewControllers` 배열이 nil일 경우 함수 종료

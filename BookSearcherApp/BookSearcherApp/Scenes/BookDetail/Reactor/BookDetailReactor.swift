@@ -9,12 +9,12 @@ final class BookDetailReactor: BaseReactor<
 > {
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
-        case toggleFavorite
+        case toggleFavorite // 즐겨찾기 상태 토글
     }
 
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
-        case setFavorite(Bool)
+        case setFavorite(Bool) // 즐겨찾기 상태 저장
     }
 
     // View의 상태 정의 (현재 View의 상태값)
@@ -25,7 +25,7 @@ final class BookDetailReactor: BaseReactor<
 
     // 생성자에서 초기 상태 설정
     init(book: BookData) {
-        let isFavorite: Bool = CoreDataMaanger.shared.fetchOneFavoriteBook(isbn: book.isbn) != nil
+        let isFavorite: Bool = CoreDataManger.shared.fetchOneFavoriteBook(isbn: book.isbn) != nil
         super.init(initialState: State(book: book, isFavorite: isFavorite))
     }
 
@@ -38,9 +38,9 @@ final class BookDetailReactor: BaseReactor<
             let isCurrentFavorite = currentState.isFavorite
 
             if isCurrentFavorite { // 현재 즐겨찾기 상태면 -> 삭제
-                CoreDataMaanger.shared.deleteOneFavoriteBook(isbn: book.isbn)
+                CoreDataManger.shared.deleteOneFavoriteBook(isbn: book.isbn)
             } else { // 즐겨찾기 상태가 아니면 -> 추가
-                CoreDataMaanger.shared.createFavoriteBook(book: book)
+                CoreDataManger.shared.createFavoriteBook(book: book)
             }
             return .just(.setFavorite(!isCurrentFavorite)) // Bool값을 반전시켜서 리턴
         }
