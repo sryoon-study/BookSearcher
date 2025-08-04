@@ -61,10 +61,10 @@ final class CoreDataManger {
         saveContext()
     }
 
-    // 최근 본 책 모든 레코드 획득
+    // 최근 본 책 모든 레코드 획득 (최신 순으로 리턴)
     func fetchAllRecentBooks() -> [RecentBook] {
         let fetchRequest: NSFetchRequest<RecentBook> = RecentBook.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "updateDate", ascending: false)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "updateDate", ascending: false)] // 가장 최신 레코드가 먼저 나오게
 
         return (try? context.fetch(fetchRequest)) ?? []
     }
