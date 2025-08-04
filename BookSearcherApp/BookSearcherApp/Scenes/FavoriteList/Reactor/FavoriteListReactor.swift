@@ -26,7 +26,7 @@ final class FavoriteListReactor: BaseReactor<
 
     // 생성자에서 초기 상태 설정
     init() {
-        let favoriteBooks = CoreDataMaanger.shared.fetchAllFavoriteBooks()
+        let favoriteBooks = CoreDataManger.shared.fetchAllFavoriteBooks()
         super.init(initialState: State(books: favoriteBooks))
     }
 
@@ -35,15 +35,15 @@ final class FavoriteListReactor: BaseReactor<
     override func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .reloadFavoriteBooks:
-            let books = CoreDataMaanger.shared.fetchAllFavoriteBooks()
+            let books = CoreDataManger.shared.fetchAllFavoriteBooks()
             return .just(.setFavoriteBooks(books))
         case let .deleteFavoriteBook(index):
             let isbn = currentState.books[index].isbn
-            CoreDataMaanger.shared.deleteOneFavoriteBook(isbn: isbn)
-            let books = CoreDataMaanger.shared.fetchAllFavoriteBooks()
+            CoreDataManger.shared.deleteOneFavoriteBook(isbn: isbn)
+            let books = CoreDataManger.shared.fetchAllFavoriteBooks()
             return .just(.setFavoriteBooks(books))
         case .clearFavoriteBooks:
-            CoreDataMaanger.shared.deleteAllFavoriteBooks()
+            CoreDataManger.shared.deleteAllFavoriteBooks()
             return .just(.setFavoriteBooks([]))
         }
     }

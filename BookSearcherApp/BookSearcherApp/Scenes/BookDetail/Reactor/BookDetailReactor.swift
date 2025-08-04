@@ -25,7 +25,7 @@ final class BookDetailReactor: BaseReactor<
 
     // 생성자에서 초기 상태 설정
     init(book: BookData) {
-        let isFavorite: Bool = CoreDataMaanger.shared.fetchOneFavoriteBook(isbn: book.isbn) != nil
+        let isFavorite: Bool = CoreDataManger.shared.fetchOneFavoriteBook(isbn: book.isbn) != nil
         super.init(initialState: State(book: book, isFavorite: isFavorite))
     }
 
@@ -38,9 +38,9 @@ final class BookDetailReactor: BaseReactor<
             let isCurrentFavorite = currentState.isFavorite
 
             if isCurrentFavorite { // 현재 즐겨찾기 상태면 -> 삭제
-                CoreDataMaanger.shared.deleteOneFavoriteBook(isbn: book.isbn)
+                CoreDataManger.shared.deleteOneFavoriteBook(isbn: book.isbn)
             } else { // 즐겨찾기 상태가 아니면 -> 추가
-                CoreDataMaanger.shared.createFavoriteBook(book: book)
+                CoreDataManger.shared.createFavoriteBook(book: book)
             }
             return .just(.setFavorite(!isCurrentFavorite)) // Bool값을 반전시켜서 리턴
         }

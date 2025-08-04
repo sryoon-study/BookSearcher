@@ -86,12 +86,12 @@ final class SearchListReactor: BaseReactor<
             return .concat(.just(.setIsLoading(true)), searchResult, .just(.setIsLoading(false)))
 
         case let .registerRecentBook(book):
-            CoreDataMaanger.shared.addRecentBook(book: book)
-            let books = CoreDataMaanger.shared.fetchAllRecentBooks()
+            CoreDataManger.shared.addRecentBook(book: book)
+            let books = CoreDataManger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
 
         case .reloadRecentBooks:
-            let books = CoreDataMaanger.shared.fetchAllRecentBooks()
+            let books = CoreDataManger.shared.fetchAllRecentBooks()
             return .just(.setRecentBooks(books))
         }
     }
