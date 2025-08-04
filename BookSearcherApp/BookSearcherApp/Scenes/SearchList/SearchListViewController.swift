@@ -8,14 +8,16 @@ import SnapKit
 import Then
 
 final class SearchListViewController: BaseViewController<SearchListReactor> {
+    // 컬렉션 뷰
     lazy var collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: makeLayout()
     )
 
+    // 컬렉션 뷰 데이터 소스
     lazy var collectionViewDataSource = makeDataSource(collectionView)
 
-    private let searchController = UISearchController()
+    private let searchController = UISearchController() // 서치 컨트롤러
 
     let focusSearchBarObservable: Observable<Void> // 검색바 포커싱용 옵저버블
 
@@ -33,18 +35,24 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
     override func setupUI() {
         view.backgroundColor = .systemBackground
 
+        // 뷰 주입
         view.addSubview(collectionView) // 첫번째가 스크롤바가 있어야 네비게이션 / 탭바 어피어런스가 적용
+
+        // 네비게이션 아이템
         navigationItem.searchController = searchController
         navigationItem.searchController?.searchBar.tintColor = .label
         navigationItem.searchController?.searchBar.setValue("취소", forKey: "cancelButtonText")
 
+        // 컬렉션 뷰에 섹션헤더 등록
         collectionView.register(SearchListSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SearchListSectionHeaderView.identifier)
 
+        // 오토 레이아웃
         collectionView.snp.makeConstraints {
             $0.directionalEdges.equalToSuperview()
         }
     }
 
+    // 데이터 소스 생성
     func makeDataSource(_ collectionView: UICollectionView) -> UICollectionViewDiffableDataSource<Section, Item> {
         // 셀 정의
         let recentBookCellRegistration = UICollectionView.CellRegistration<RecentBookCell, BookData> { cell, _, bookData in
@@ -81,6 +89,7 @@ final class SearchListViewController: BaseViewController<SearchListReactor> {
         return dataSource
     }
 
+    // 레이아웃 생성
     func makeLayout() -> UICollectionViewLayout {
         UICollectionViewCompositionalLayout { [weak self] sectionIndex, _ in
             guard let section = self?.collectionViewDataSource.sectionIdentifier(for: sectionIndex) else { return nil }

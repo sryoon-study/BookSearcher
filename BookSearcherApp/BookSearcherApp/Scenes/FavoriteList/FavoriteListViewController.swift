@@ -8,24 +8,29 @@ import SnapKit
 import Then
 
 final class FavoriteListViewController: BaseViewController<FavoriteListReactor> {
+    // 전체 삭제 버튼
     private let clearFavoriteButton = UIButton(configuration: .clearFavorite)
 
+    // 타이틀
     private let favoriteListLabel = UILabel().then {
         $0.text = "담은 책 리스트"
         $0.font = .systemFont(ofSize: 22, weight: .bold)
         $0.textColor = .label
     }
 
+    // 추가 버튼
     private let addFavoriteButton = UIButton(configuration: .addFavorite)
 
+    // 컬렉션뷰 요소
     lazy var collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: makeLayout()
     )
 
+    // 컬렉션뷰 데이터 소스
     lazy var collectionViewDataSource = makeDataSource(collectionView)
 
-    private let searchController = UISearchController()
+    private let searchController = UISearchController() // 서치 컨트롤러
 
     let deleteRelay = PublishRelay<Int>() // 삭제에서 쓰는 릴레이
 
@@ -42,15 +47,19 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         fatalError("init(coder:) has not been implemented")
     }
 
+    // 최초 구성
     override func setupUI() {
         view.backgroundColor = .systemBackground
 
+        // 뷰 주입
         view.addSubview(collectionView)
 
+        // 오토 레이아웃
         collectionView.snp.makeConstraints {
             $0.directionalEdges.equalToSuperview()
         }
 
+        // 네비게이션 아이템 설정
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: clearFavoriteButton)
         navigationItem.titleView = favoriteListLabel
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: addFavoriteButton)
@@ -58,6 +67,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
 
     // TODO: <Int, data>로 변경
     func makeDataSource(_ collectionView: UICollectionView) -> UICollectionViewDiffableDataSource<Section, Item> {
+        // 셀 정의
         let favoriteBookCell = UICollectionView.CellRegistration<FavoriteBookCell, FavoriteBook> { cell, _, bookData in
             cell.configure(
                 title: bookData.title,
@@ -66,6 +76,7 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
                 thumbnailURL: URL(string: bookData.thumbnail)!
             )
         }
+        // 데이터소스 정의
         let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
             switch item {
             case let .favoriteBooks(bookdata):
@@ -74,20 +85,19 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
         }
         return dataSource
     }
-    
-
 
     func makeLayout() -> UICollectionViewLayout {
-        var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+        var configuration = UICollectionLayoutListConfiguration(appearance: .plain) // 리스트형 레이아웃
         configuration.showsSeparators = false
-        
+
+        // 삭제 기능 설정
         configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
             let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { _, _, completion in
-                self?.deleteRelay.accept(indexPath.item)
+                self?.deleteRelay.accept(indexPath.item) // 릴레이에 indexPath 전달
                 completion(true)
             }
-            
-            deleteAction.image = UIImage(systemName: "trash")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal) // SF Symbol 아이콘 추가
+
+            deleteAction.image = UIImage(systemName: "trash")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal) // SF Symbol 아이콘 추가, 색 설정
             deleteAction.backgroundColor = .systemBackground // 배경색 변경
 
             let config = UISwipeActionsConfiguration(actions: [deleteAction])
@@ -136,10 +146,12 @@ final class FavoriteListViewController: BaseViewController<FavoriteListReactor> 
             .disposed(by: disposeBag)
     }
 
+    // 섹션
     enum Section {
         case favoriteBooks
     }
 
+    // 아이템
     enum Item: Hashable {
         case favoriteBooks(FavoriteBook)
     }

@@ -9,12 +9,12 @@ final class BookDetailReactor: BaseReactor<
 > {
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
-        case toggleFavorite
+        case toggleFavorite // 즐겨찾기 상태 토글
     }
 
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
-        case setFavorite(Bool)
+        case setFavorite(Bool) // 즐겨찾기 상태 저장
     }
 
     // View의 상태 정의 (현재 View의 상태값)

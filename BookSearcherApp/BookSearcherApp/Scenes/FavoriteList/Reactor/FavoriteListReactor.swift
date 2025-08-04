@@ -9,14 +9,14 @@ final class FavoriteListReactor: BaseReactor<
 > {
     // 사용자 액션 정의 (사용자의 의도)
     enum Action {
-        case reloadFavoriteBooks
-        case deleteFavoriteBook(Int)
-        case clearFavoriteBooks
+        case reloadFavoriteBooks // 즐겨찾기 목록 로딩
+        case deleteFavoriteBook(Int) // 즐겨찾기 1건 삭제
+        case clearFavoriteBooks // 즐겨찾기 전부삭제
     }
 
     // 상태변경 이벤트 정의 (상태를 어떻게 바꿀 것인가)
     enum Mutation {
-        case setFavoriteBooks([FavoriteBook])
+        case setFavoriteBooks([FavoriteBook]) // 즐겨찾기 세팅 뮤테이션
     }
 
     // View의 상태 정의 (현재 View의 상태값)
